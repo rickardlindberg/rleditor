@@ -19,6 +19,7 @@ Parser {
     | expr2:x space '?'                       -> ["Or" x ["And"]]
     | space '!' expr2:x                       -> ["Not" x]
     | space '%'                               -> ["MatchCallRule"]
+    | space '#'                               -> ["MatchPos"]
     | expr2
   expr2 =
     | name:x !(space '=')                     -> ["MatchRule" x]

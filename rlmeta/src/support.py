@@ -81,6 +81,10 @@ class Stream:
         else:
             self.error("unknown rule")
 
+    def match_pos(self):
+        index = self.index
+        return self.action(lambda self: index)
+
     def match(self, fn, description):
         if self.index < len(self.items):
             item = self.items[self.index]
@@ -158,6 +162,19 @@ class Runtime:
 
     def concat(self, lists):
         return [x for xs in lists for x in xs]
+
+    def range(self, start, end):
+        return Range(start, end)
+
+
+class Range:
+
+    def __init__(self, start, end):
+        self.start = start
+        self.end = end
+
+    def __repr__(self):
+        return f"Range({self.start}, {self.end})"
 
 
 def compile_chain(grammars, source):

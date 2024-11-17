@@ -1,29 +1,31 @@
 Json {
     file = document:x s !. -> x
     document = string | true | false | null | number | list | dict
-    string = s '"' char*:xs '"' -> ["String" {xs}]
-    true = s 'true' -> ["True"]
-    false = s 'false' -> ["False"]
-    null = s 'null' -> ["Null"]
-    number = s digit:x digit*:xs -> ["Number" int({[x ~xs]})]
+    string = s #:s '"' char*:xs '"' #:e -> ["String" range(s e) {xs}]
+    true = s #:s 'true' #:e -> ["True" range(s e)]
+    false = s #:s 'false' #:e -> ["False" range(s e)]
+    null = s #:s 'null' #:e -> ["Null" range(s e)]
+    number = s #:s digit:x digit*:xs #:e -> ["Number" range(s e) int({[x ~xs]})]
     digit = '0'-'9'
     list = s '[' items:x s ']' -> ["List" ~x]
     items = document:x (s ',' document)*:xs -> [x ~xs] | -> []
-    dict = s '{' dictItems:x s '}' -> ["Dict" ~x]
+    dict = s #:s '{' dictItems:x s '}' #:e -> ["Dict" range(s e) ~x]
     dictItems = dictItem:x (s ',' dictItem)*:xs -> [x ~xs] | -> []
     dictItem = key:x s ':' document:y -> ["Entry" x y]
-    key = s '"' char*:xs '"' -> {xs}
+    key = s #:s '"' char*:xs '"' #:e -> ["Key" range(s e) {xs}]
     char = !'"' .
     s = (' ' | '\n')*
 
     pretty = %:x !. -> x
     prettyInner = [pretty:x] -> x
     prettyInnerList = prettyInner:x (prettyInner:y -> {",\n" y})*:xs -> {x xs} | -> ""
-    Dict = prettyInnerList:x !. -> {"{\n" indent({x}) "\n}"}
-    Entry = .:key prettyInner:value -> {"\"" key "\": " value}
-    Number = .:value -> { value }
+    Dict = . prettyInnerList:x !. -> {"{\n" indent({x}) "\n}"}
+    Entry = prettyInner:key prettyInner:value -> {key ": " value}
+    Number = . .:value -> { value }
     List = prettyInnerList:x !. -> {"[\n" indent({x}) "\n]"}
-    True = -> "true"
-    False = -> "false"
-    Null = -> "null"
+    True = . -> "true"
+    False = . -> "false"
+    Null = . -> "null"
+    Key = . .:value -> {"\"" value "\""}
+    String = . .:value -> {"\"" value "\""}
 }

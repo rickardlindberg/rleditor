@@ -5,27 +5,27 @@ import sys
 def selftest():
     """
     >>> compile_chain(["Json.file"], ' "hello" ')
-    ['String', 'hello']
+    ['String', Range(1, 8), 'hello']
 
     >>> compile_chain(["Json.file"], ' true ')
-    ['True']
+    ['True', Range(1, 5)]
 
     >>> compile_chain(["Json.file"], ' false ')
-    ['False']
+    ['False', Range(1, 6)]
 
     >>> compile_chain(["Json.file"], ' null ')
-    ['Null']
+    ['Null', Range(1, 5)]
 
     >>> compile_chain(["Json.file"], ' 134 ')
-    ['Number', 134]
+    ['Number', Range(1, 4), 134]
 
     >>> compile_chain(["Json.file"], ' [ 1 , 2 , 3 ] ')
-    ['List', ['Number', 1], ['Number', 2], ['Number', 3]]
+    ['List', ['Number', Range(3, 4), 1], ['Number', Range(7, 8), 2], ['Number', Range(11, 12), 3]]
 
     >>> compile_chain(["Json.file"], ' { "hello" : 5 } ')
-    ['Dict', ['Entry', 'hello', ['Number', 5]]]
+    ['Dict', Range(1, 16), ['Entry', ['Key', Range(3, 10), 'hello'], ['Number', Range(13, 14), 5]]]
 
-    >>> print(compile_chain(["Json.file", "Json.pretty"], ' { "hello" : [1, false, true, null], "there": 88 } '), end="")
+    >>> print(compile_chain(["Json.file", "Json.pretty"], ' { "hello" : [1, false, true, null], "there": "hello" } '), end="")
     {
         "hello": [
             1,
@@ -33,7 +33,7 @@ def selftest():
             true,
             null
         ],
-        "there": 88
+        "there": "hello"
     }
     """
     doctest.testmod()
