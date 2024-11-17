@@ -16,16 +16,31 @@ Json {
     char = !'"' .
     s = (' ' | '\n')*
 
-    pretty = %:x !. -> x
-    prettyInner = [pretty:x] -> x
-    prettyInnerList = prettyInner:x (prettyInner:y -> {",\n" y})*:xs -> {x xs} | -> ""
-    Dict = . prettyInnerList:x !. -> {"{\n" indent({x}) "\n}"}
-    Entry = prettyInner:key prettyInner:value -> {key ": " value}
-    Number = . .:value -> { value }
-    List = prettyInnerList:x !. -> {"[\n" indent({x}) "\n]"}
-    True = . -> "true"
-    False = . -> "false"
-    Null = . -> "null"
-    Key = . .:value -> {"\"" value "\""}
-    String = . .:value -> {"\"" value "\""}
+    pretty = %:x !.
+        -> []:prefix
+        -> tokens(x)
+    prettyInner = [%:x !.] -> x
+    prettyInnerList =
+        prettyInner:x (prettyInner:y newline:n
+            -> [token("text" {"," n}) ~y]
+        )*:xs -> [~x ~~xs]
+        | -> []
+    Dict = . prettyInnerList:x newline:n !.
+        -> token("text" {n "}"}):end
+        -> ["    " ~prefix]:prefix
+        -> [token("text" { "{" n }) ~x end]
+    Entry = prettyInner:key prettyInner:value -> [
+        ~key token("text" ": ") ~value
+    ]
+    Number = . .:value -> [token("number" { value })]
+    List = prettyInnerList:x newline:n !.
+        -> token("text" {n "]"}):end
+        -> ["    " ~prefix]:prefix
+        -> [token("text" { "[" n }) ~x end ]
+    True = . -> [token("bool" "true")]
+    False = . -> [token("bool" "false")]
+    Null = . -> [token("null" "null")]
+    Key = . .:value -> [token("string" {"\"" value "\""})]
+    String = . .:value -> [token("string" {"\"" value "\""})]
+    newline = -> { "\n" prefix }
 }

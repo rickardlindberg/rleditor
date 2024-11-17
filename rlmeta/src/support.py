@@ -163,8 +163,36 @@ class Runtime:
     def concat(self, lists):
         return [x for xs in lists for x in xs]
 
-    def range(self, start, end):
-        return Range(start, end)
+    def range(self, *args):
+        return Range(*args)
+
+    def token(self, *args):
+        return Token(*args)
+
+    def tokens(self, *args):
+        return Tokens(*args)
+
+
+class Tokens:
+
+    def __init__(self, tokens):
+        self.tokens = tokens
+
+    def as_text(self):
+        return "".join(token.text for token in self.tokens)
+
+    def __repr__(self):
+        return "\n".join(["Tokens:"] + [f"{token!r}" for token in self.tokens])
+
+
+class Token:
+
+    def __init__(self, name, text):
+        self.name = name
+        self.text = text
+
+    def __repr__(self):
+        return f"Token({self.name!r}, {self.text!r})"
 
 
 class Range:
@@ -174,7 +202,7 @@ class Range:
         self.end = end
 
     def __repr__(self):
-        return f"Range({self.start}, {self.end})"
+        return f"Range({self.start!r}, {self.end!r})"
 
 
 def compile_chain(grammars, source):
