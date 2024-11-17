@@ -1,5 +1,6 @@
 rules = {}
 
+
 class Stream:
 
     def __init__(self, items):
@@ -93,12 +94,14 @@ class Stream:
             self.latest_error = (name, self.items, self.index)
         raise MatchError(*self.latest_error)
 
+
 class MatchError(Exception):
 
     def __init__(self, name, items, index):
         Exception.__init__(self, name)
         self.items = items
         self.index = index
+
 
 class SemanticAction:
 
@@ -120,9 +123,10 @@ class SemanticAction:
         else:
             return self.runtime.lookup(name)
 
+
 class Runtime:
 
-    def __init__(self, extra={"len": len, "repr": repr}):
+    def __init__(self, extra={"len": len, "repr": repr, "int": int}):
         self.vars = extra
 
     def bind(self, name, value):
@@ -144,21 +148,23 @@ class Runtime:
         )
 
     def indent(self, text, prefix="    "):
-        return "".join(prefix+line for line in text.splitlines(True))
+        return "".join(prefix + line for line in text.splitlines(True))
 
     def splice(self, depth, item):
         if depth == 0:
             return [item]
         else:
-            return self.concat([self.splice(depth-1, subitem) for subitem in item])
+            return self.concat([self.splice(depth - 1, subitem) for subitem in item])
 
     def concat(self, lists):
         return [x for xs in lists for x in xs]
+
 
 def compile_chain(grammars, source):
     import os
     import sys
     import pprint
+
     runtime = Runtime()
     for rule in grammars:
         try:
@@ -168,12 +174,12 @@ def compile_chain(grammars, source):
             if os.isatty(sys.stderr.fileno()):
                 marker = f"\033[0;31m{marker}\033[0m"
             if isinstance(e.items, str):
-                stream_string = e.items[:e.index] + marker + e.items[e.index:]
+                stream_string = e.items[: e.index] + marker + e.items[e.index :]
             else:
                 stream_string = pprint.pformat(e.items)
-            sys.exit("ERROR: {}\nPOSITION: {}\nSTREAM:\n{}".format(
-                str(e),
-                e.index,
-                runtime.indent(stream_string)
-            ))
+            sys.exit(
+                "ERROR: {}\nPOSITION: {}\nSTREAM:\n{}".format(
+                    str(e), e.index, runtime.indent(stream_string)
+                )
+            )
     return source

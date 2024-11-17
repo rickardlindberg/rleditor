@@ -1,0 +1,29 @@
+Json {
+    file = document:x s !. -> x
+    document = string | true | false | null | number | list | dict
+    string = s '"' char*:xs '"' -> ["String" {xs}]
+    true = s 'true' -> ["True"]
+    false = s 'false' -> ["False"]
+    null = s 'null' -> ["Null"]
+    number = s digit:x digit*:xs -> ["Number" int({[x ~xs]})]
+    digit = '0'-'9'
+    list = s '[' items:x s ']' -> ["List" ~x]
+    items = document:x (s ',' document)*:xs -> [x ~xs] | -> []
+    dict = s '{' dictItems:x s '}' -> ["Dict" ~x]
+    dictItems = dictItem:x (s ',' dictItem)*:xs -> [x ~xs] | -> []
+    dictItem = key:x s ':' document:y -> ["Entry" x y]
+    key = s '"' char*:xs '"' -> {xs}
+    char = !'"' .
+    s = (' ' | '\n')*
+
+    pretty = %:x !. -> x
+    prettyInner = [pretty:x] -> x
+    prettyInnerList = prettyInner:x (prettyInner:y -> {",\n" y})*:xs -> {x xs} | -> ""
+    Dict = prettyInnerList:x !. -> {"{\n" indent({x}) "\n}"}
+    Entry = .:key prettyInner:value -> {"\"" key "\": " value}
+    Number = .:value -> { value }
+    List = prettyInnerList:x !. -> {"[\n" indent({x}) "\n]"}
+    True = -> "true"
+    False = -> "false"
+    Null = -> "null"
+}
