@@ -3,11 +3,11 @@ import sys
 
 
 def parse(text):
-    return compile_chain(["Json.file"], text)
+    return compile_chain(["JsonParser.file"], text)
 
 
 def pretty(text):
-    return compile_chain(["Json.file", "Json.pretty"], text)
+    return compile_chain(["JsonParser.file", "JsonPrettyPrinter.pretty"], text)
 
 
 def selftest():

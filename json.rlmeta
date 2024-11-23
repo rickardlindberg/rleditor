@@ -1,4 +1,4 @@
-Json {
+JsonParser {
     file = document:x s !. -> x
     document = string | true | false | null | number | list | dict
     string = s '"' #:s char*:xs #:e '"' -> ["String" range(s e) {xs}]
@@ -15,7 +15,9 @@ Json {
     key = s '"' #:s char*:xs #:e '"' -> ["Key" range(s e) {xs}]
     char = !'"' .
     s = (' ' | '\n')*
+}
 
+JsonPrettyPrinter {
     pretty = %:x !.
         -> []:prefix
         -> tokens(x)
