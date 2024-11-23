@@ -98,6 +98,21 @@ def selftest():
         ],
         "there": "hello"
     }
+
+    Full roundtrip example new style:
+
+    >>> text = ' { "hello" : [1, false, true, null], "there": "hello" } '
+    >>> pretty = compile_chain(["JsonParser.file", "JsonPrettyPrinterWithoutTokens.pretty"], text)
+    >>> print(pretty, end="")
+    {
+        "hello": [
+            1,
+            false,
+            true,
+            null
+        ],
+        "there": "hello"
+    }
     """
     doctest.testmod()
     print("ok")
