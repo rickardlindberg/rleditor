@@ -1,20 +1,31 @@
 JsonParser {
-    file = document:x s !. -> x
-    document = string | true | false | null | number | list | dict
-    string = s '"' #:s char*:xs #:e '"' -> ["String" range(s e) {xs}]
-    true = s #:s 'true' #:e -> ["True" range(s e)]
-    false = s #:s 'false' #:e -> ["False" range(s e)]
-    null = s #:s 'null' #:e -> ["Null" range(s e)]
-    number = s #:s digit:x digit*:xs #:e -> ["Number" range(s e) int({[x ~xs]})]
-    digit = '0'-'9'
-    list = s '[' items:x s ']' -> ["List" ~x]
-    items = document:x (s ',' document)*:xs -> [x ~xs] | -> []
-    dict = s #:s '{' dictItems:x s '}' #:e -> ["Dict" range(s e) ~x]
-    dictItems = dictItem:x (s ',' dictItem)*:xs -> [x ~xs] | -> []
-    dictItem = key:x s ':' document:y -> ["Entry" x y]
-    key = s '"' #:s char*:xs #:e '"' -> ["Key" range(s e) {xs}]
-    char = !'"' .
-    s = (' ' | '\n')*
+    file      = document:x s !.                 -> x
+    document  =
+        | string
+        | true
+        | false
+        | null
+        | number
+        | list
+        | dict
+    string    = s '"' #:s char*:xs #:e '"'      -> ["String" range(s e) {xs}]
+    true      = s #:s 'true' #:e                -> ["True" range(s e)]
+    false     = s #:s 'false' #:e               -> ["False" range(s e)]
+    null      = s #:s 'null' #:e                -> ["Null" range(s e)]
+    number    = s #:s digit:x digit*:xs #:e     -> ["Number" range(s e) int({[x ~xs]})]
+    digit     = '0'-'9'
+    list      = s '[' items:x s ']'             -> ["List" ~x]
+    items     =
+        | document:x (s ',' document)*:xs       -> [x ~xs]
+        |                                       -> []
+    dict      = s #:s '{' dictItems:x s '}' #:e -> ["Dict" range(s e) ~x]
+    dictItems =
+        | dictItem:x (s ',' dictItem)*:xs       -> [x ~xs]
+        |                                       -> []
+    dictItem  = key:x s ':' document:y          -> ["Entry" x y]
+    key       = s '"' #:s char*:xs #:e '"'      -> ["Key" range(s e) {xs}]
+    char      = !'"' .
+    s         = (' ' | '\n')*
 }
 
 JsonPrettyPrinter {
