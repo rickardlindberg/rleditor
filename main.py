@@ -13,6 +13,14 @@ def parse(text):
     return compile_chain(["JsonParser.file"], text)
 
 
+def pretty(tree):
+    return compile_chain(["JsonPrettyPrinter.pretty"], tree)
+
+
+def tokens(tree):
+    return compile_chain(["SyntaxTokenizer.tokens"], tree)
+
+
 def cut(name, start, end, children):
     result = []
     for child_name, child_start, child_end in children:
@@ -72,7 +80,7 @@ def selftest():
     Full roundtrip example:
 
     >>> text = ' { "hello" : [1, false, true, null], "there": "hello" } '
-    >>> pretty = compile_chain(["JsonParser.file", "JsonPrettyPrinter.pretty"], text)
+    >>> pretty = pretty(parse(text))
     >>> print(pretty, end="")
     {
         "hello": [
@@ -84,24 +92,18 @@ def selftest():
         "there": "hello"
     }
 
-    Positions:
+    Tokens:
 
-    >>> for position in compile_chain(
-    ...     ["JsonParser.file", "SyntaxTokenizer.tokens"],
-    ...     "[1, 2]"
-    ... ):
-    ...     print(position)
+    >>> for token in tokens(parse("[1, 2]")):
+    ...     print(token)
     ['List', 0, 1]
     ['Number', 1, 2]
     ['List', 2, 4]
     ['Number', 4, 5]
     ['List', 5, 6]
 
-    >>> for position in compile_chain(
-    ...     ["JsonParser.file", "SyntaxTokenizer.tokens"],
-    ...     '{"key": 4}'
-    ... ):
-    ...     print(position)
+    >>> for token in tokens(parse('{"key": 4}')):
+    ...     print(token)
     ['Dict', 0, 1]
     ['Key', 1, 6]
     ['Entry', 6, 8]
@@ -130,15 +132,15 @@ class Canvas(Gtk.DrawingArea):
         self.render_text(
             context,
             400,
-            compile_chain(["JsonParser.file", "JsonPrettyPrinter.pretty"], src),
+            pretty(parse(src)),
         )
 
     def render_text(self, context, start_x, text):
-        tree = compile_chain(["JsonParser.file"], text)
+        tree = parse(text)
         ascent, descent, font_height, _, _ = context.font_extents()
         x = start_x
         y = 40
-        for name, start, end in compile_chain(["SyntaxTokenizer.tokens"], tree):
+        for name, start, end in tokens(tree):
             context.set_source_rgb(0.1, 0.1, 0.1)
             part = text[start:end]
             for index, sub_part in enumerate(part.split("\n")):
