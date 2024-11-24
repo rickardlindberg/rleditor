@@ -80,3 +80,14 @@ JsonPrettyPrinterWithoutTokens {
     Key    = . . .:value                       -> {"\"" value "\""}
     String = . . .:value                       -> {"\"" value "\""}
 }
+
+JsonPositions {
+    positions =
+        .:name
+        .:start
+        .:end
+        .:value
+        positionsOuter*:xs
+    -> cut(name start end [~~xs])
+    positionsOuter = [positions:x] -> x
+}

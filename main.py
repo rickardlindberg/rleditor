@@ -10,6 +10,18 @@ def pretty(text):
     return compile_chain(["JsonParser.file", "JsonPrettyPrinter.pretty"], text)
 
 
+def cut(name, start, end, children):
+    result = []
+    for child_name, child_start, child_end in children:
+        if start != child_start:
+            result.append([name, start, child_start])
+        result.append([child_name, child_start, child_end])
+        start = child_end
+    if start != end:
+        result.append([name, start, end])
+    return result
+
+
 def selftest():
     """
     String:
@@ -113,6 +125,17 @@ def selftest():
         ],
         "there": "hello"
     }
+
+    >>> for position in compile_chain(
+    ...     ["JsonParser.file", "JsonPositions.positions"],
+    ...     "[1, 2]"
+    ... ):
+    ...     print(position)
+    ['List', 0, 1]
+    ['Number', 1, 2]
+    ['List', 2, 4]
+    ['Number', 4, 5]
+    ['List', 5, 6]
     """
     doctest.testmod()
     print("ok")

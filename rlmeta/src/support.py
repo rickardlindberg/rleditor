@@ -172,6 +172,9 @@ class Runtime:
     def tokens(self, *args):
         return Tokens(*args)
 
+    def cut(self, *args):
+        return cut(*args)
+
 
 class Tokens:
 
