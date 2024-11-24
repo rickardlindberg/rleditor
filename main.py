@@ -16,7 +16,7 @@ def selftest():
 
     >>> text = ' "hello" '
     >>> parse(text)
-    ['String', 2, 7, 'hello']
+    ['Document', 0, 9, '', ['String', 2, 7, 'hello']]
     >>> pretty(text)
     Tokens:
     Token('string', '"hello"')
@@ -25,7 +25,7 @@ def selftest():
 
     >>> text = ' true '
     >>> parse(text)
-    ['True', 1, 5, '']
+    ['Document', 0, 6, '', ['True', 1, 5, '']]
     >>> pretty(text)
     Tokens:
     Token('bool', 'true')
@@ -34,7 +34,7 @@ def selftest():
 
     >>> text = ' false '
     >>> parse(text)
-    ['False', 1, 6, '']
+    ['Document', 0, 7, '', ['False', 1, 6, '']]
     >>> pretty(text)
     Tokens:
     Token('bool', 'false')
@@ -43,7 +43,7 @@ def selftest():
 
     >>> text = ' null '
     >>> parse(text)
-    ['Null', 1, 5, '']
+    ['Document', 0, 6, '', ['Null', 1, 5, '']]
     >>> pretty(text)
     Tokens:
     Token('null', 'null')
@@ -52,7 +52,7 @@ def selftest():
 
     >>> text = ' 134 '
     >>> parse(text)
-    ['Number', 1, 4, 134]
+    ['Document', 0, 5, '', ['Number', 1, 4, 134]]
     >>> pretty(text)
     Tokens:
     Token('number', '134')
@@ -61,7 +61,7 @@ def selftest():
 
     >>> text = ' [ 1 , 2 , 3 ] '
     >>> parse(text)
-    ['List', 1, 14, '', ['Number', 3, 4, 1], ['Number', 7, 8, 2], ['Number', 11, 12, 3]]
+    ['Document', 0, 15, '', ['List', 1, 14, '', ['Number', 3, 4, 1], ['Number', 7, 8, 2], ['Number', 11, 12, 3]]]
     >>> pretty(text)
     Tokens:
     Token('text', '[\\n    ')
@@ -76,7 +76,7 @@ def selftest():
 
     >>> text = ' { "hello" : 5 } '
     >>> parse(text)
-    ['Dict', 1, 16, '', ['Entry', 2, 14, ['Key', 4, 9, 'hello'], ['Number', 13, 14, 5]]]
+    ['Document', 0, 17, '', ['Dict', 1, 16, '', ['Entry', 2, 14, ['Key', 4, 9, 'hello'], ['Number', 13, 14, 5]]]]
     >>> pretty(text)
     Tokens:
     Token('text', '{\\n    ')

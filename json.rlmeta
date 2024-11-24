@@ -1,5 +1,5 @@
 JsonParser {
-    file      = document:x s !.                 -> x
+    file      = #:s document:x s #:e !.         -> ["Document" s e "" x]
     document  =
         | string
         | true
@@ -38,6 +38,7 @@ JsonPrettyPrinter {
             -> [token("text" {"," n}) ~y]
         )*:xs -> [~x ~~xs]
         | -> []
+    Document = . . . prettyInnerList
     Dict = . . . prettyInnerList:x newline:n !.
         -> token("text" {n "}"}):end
         -> ["    " ~prefix]:prefix
@@ -68,6 +69,7 @@ JsonPrettyPrinterWithoutTokens {
                                                       "\n"
                                                   }
         | -> []
+    Document = . . . prettyInner
     Dict   = . . . prettyInnerItems:x !.       -> { "{" x "}" }
     List   = . . . prettyInnerItems:x !.       -> { "[" x "]" }
     Entry  = . . prettyInner:key prettyInner:value -> { key ": " value }
