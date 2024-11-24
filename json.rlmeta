@@ -28,7 +28,7 @@ JsonParser {
     s         = (' ' | '\n')*
 }
 
-JsonPrettyPrinterWithoutTokens {
+JsonPrettyPrinter {
     pretty = %:x !.  -> x
     prettyInner = [%:x !.] -> x
     prettyInnerItems =
@@ -50,13 +50,13 @@ JsonPrettyPrinterWithoutTokens {
     String = . . .:value                       -> {"\"" value "\""}
 }
 
-JsonPositions {
-    positions =
+SyntaxTokenizer {
+    tokens =
         .:name
         .:start
         .:end
         .:value
-        positionsOuter*:xs
+        tokensOuter*:xs
     -> cut(name start end [~~xs])
-    positionsOuter = [positions:x] -> x
+    tokensOuter = [tokens:x] -> x
 }

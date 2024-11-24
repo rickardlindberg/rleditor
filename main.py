@@ -72,7 +72,7 @@ def selftest():
     Full roundtrip example:
 
     >>> text = ' { "hello" : [1, false, true, null], "there": "hello" } '
-    >>> pretty = compile_chain(["JsonParser.file", "JsonPrettyPrinterWithoutTokens.pretty"], text)
+    >>> pretty = compile_chain(["JsonParser.file", "JsonPrettyPrinter.pretty"], text)
     >>> print(pretty, end="")
     {
         "hello": [
@@ -87,7 +87,7 @@ def selftest():
     Positions:
 
     >>> for position in compile_chain(
-    ...     ["JsonParser.file", "JsonPositions.positions"],
+    ...     ["JsonParser.file", "SyntaxTokenizer.tokens"],
     ...     "[1, 2]"
     ... ):
     ...     print(position)
@@ -98,7 +98,7 @@ def selftest():
     ['List', 5, 6]
 
     >>> for position in compile_chain(
-    ...     ["JsonParser.file", "JsonPositions.positions"],
+    ...     ["JsonParser.file", "SyntaxTokenizer.tokens"],
     ...     '{"key": 4}'
     ... ):
     ...     print(position)
@@ -130,9 +130,7 @@ class Canvas(Gtk.DrawingArea):
         self.render_text(
             context,
             400,
-            compile_chain(
-                ["JsonParser.file", "JsonPrettyPrinterWithoutTokens.pretty"], src
-            ),
+            compile_chain(["JsonParser.file", "JsonPrettyPrinter.pretty"], src),
         )
 
     def render_text(self, context, start_x, text):
@@ -140,7 +138,7 @@ class Canvas(Gtk.DrawingArea):
         ascent, descent, font_height, _, _ = context.font_extents()
         x = start_x
         y = 40
-        for name, start, end in compile_chain(["JsonPositions.positions"], tree):
+        for name, start, end in compile_chain(["SyntaxTokenizer.tokens"], tree):
             context.set_source_rgb(0.1, 0.1, 0.1)
             part = text[start:end]
             for index, sub_part in enumerate(part.split("\n")):
