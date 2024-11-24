@@ -1,6 +1,13 @@
 import doctest
 import sys
 
+import cairo
+
+import gi
+
+gi.require_version("Gtk", "3.0")
+from gi.repository import Gtk, Gdk, GLib
+
 
 def parse(text):
     return compile_chain(["JsonParser.file"], text)
@@ -141,6 +148,80 @@ def selftest():
     print("ok")
 
 
+class Canvas(Gtk.DrawingArea):
+
+    def __init__(self):
+        Gtk.DrawingArea.__init__(self)
+        self.add_events(self.get_events() | Gdk.EventMask.POINTER_MOTION_MASK)
+        self.connect("draw", self.on_draw)
+        self.connect("motion-notify-event", self.on_motion_notify_event)
+
+    def on_draw(self, widget, context):
+        context.set_source_rgb(1, 0.7, 1)
+        context.paint()
+        context.select_font_face("Monospace")
+        context.set_font_size(20)
+        src = ' { "hello" : [1, false,\n true, null],\n "there": "hello" } '
+        self.render_text(context, 20, src)
+        self.render_text(
+            context,
+            400,
+            compile_chain(
+                ["JsonParser.file", "JsonPrettyPrinterWithoutTokens.pretty"], src
+            ),
+        )
+
+    def render_text(self, context, start_x, text):
+        tree = compile_chain(["JsonParser.file"], text)
+        ascent, descent, font_height, _, _ = context.font_extents()
+        x = start_x
+        y = 40
+        for name, start, end in compile_chain(["JsonPositions.positions"], tree):
+            context.set_source_rgb(0.1, 0.1, 0.1)
+            part = text[start:end]
+            for index, sub_part in enumerate(part.split("\n")):
+                if index > 0:
+                    y += font_height
+                    x = start_x
+                context.set_source_rgb(*self.name_to_color(name))
+                context.move_to(x, y)
+                extents = context.text_extents(sub_part)
+                context.text_path(sub_part)
+                x += extents.x_advance
+                context.fill()
+
+    def name_to_color(self, name):
+        TEXT = (0.1, 0.1, 0.1)
+        NUMBER = (0.1, 0.1, 0.1)
+        BUILTIN = (0.1, 0.1, 0.5)
+        KEY = (1, 0.0, 0.0)
+        STRING = (0.5, 0.1, 0.1)
+        return {
+            "Document": TEXT,
+            "Dict": TEXT,
+            "List": TEXT,
+            "Entry": TEXT,
+            "Number": NUMBER,
+            "True": BUILTIN,
+            "False": BUILTIN,
+            "Null": BUILTIN,
+            "Key": KEY,
+            "String": STRING,
+        }.get(name, TEXT)
+
+    def on_motion_notify_event(self, widget, event):
+        self.x, self.y = self.translate_coordinates(self, event.x, event.y)
+        self.queue_draw()
+
+
 if __name__ == "__main__":
     if "--selftest" in sys.argv:
         selftest()
+    else:
+        window = Gtk.Window()
+        window.connect("destroy", Gtk.main_quit)
+        box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
+        box.pack_start(Canvas(), True, True, 0)
+        window.add(box)
+        window.show_all()
+        Gtk.main()
