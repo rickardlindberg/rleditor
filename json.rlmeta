@@ -22,7 +22,7 @@ JsonParser {
     dictItems =
         | dictItem:x (s ',' dictItem)*:xs       -> [x ~xs]
         |                                       -> []
-    dictItem  = #:s key:x s ':' document:y #:e  -> ["Entry" s e x y]
+    dictItem  = #:s key:x s ':' document:y #:e  -> ["Entry" s e "" x y]
     key       = s '"' #:s char*:xs #:e '"'      -> ["Key" s e {xs}]
     char      = !'"' .
     s         = (' ' | '\n')*
@@ -43,7 +43,7 @@ JsonPrettyPrinter {
         -> token("text" {n "}"}):end
         -> ["    " ~prefix]:prefix
         -> [token("text" { "{" n }) ~x end]
-    Entry = . . prettyInner:key prettyInner:value -> [
+    Entry = . . . prettyInner:key prettyInner:value -> [
         ~key token("text" ": ") ~value
     ]
     Number = . . .:value -> [token("number" { value })]
@@ -72,7 +72,7 @@ JsonPrettyPrinterWithoutTokens {
     Document = . . . prettyInner
     Dict   = . . . prettyInnerItems:x !.       -> { "{" x "}" }
     List   = . . . prettyInnerItems:x !.       -> { "[" x "]" }
-    Entry  = . . prettyInner:key prettyInner:value -> { key ": " value }
+    Entry  = . . . prettyInner:key prettyInner:value -> { key ": " value }
     Number = . . .:value                       -> { value }
     True   = . . .                             -> "true"
     False  = . . .                             -> "false"

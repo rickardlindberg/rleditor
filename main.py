@@ -95,7 +95,7 @@ def selftest():
 
     >>> text = ' { "hello" : 5 } '
     >>> parse(text)
-    ['Document', 0, 17, '', ['Dict', 1, 16, '', ['Entry', 2, 14, ['Key', 4, 9, 'hello'], ['Number', 13, 14, 5]]]]
+    ['Document', 0, 17, '', ['Dict', 1, 16, '', ['Entry', 2, 14, '', ['Key', 4, 9, 'hello'], ['Number', 13, 14, 5]]]]
     >>> pretty(text)
     Tokens:
     Token('text', '{\\n    ')
@@ -143,6 +143,18 @@ def selftest():
     ['List', 2, 4]
     ['Number', 4, 5]
     ['List', 5, 6]
+
+    >>> for position in compile_chain(
+    ...     ["JsonParser.file", "JsonPositions.positions"],
+    ...     '{"key": 4}'
+    ... ):
+    ...     print(position)
+    ['Dict', 0, 1]
+    ['Entry', 1, 2]
+    ['Key', 2, 5]
+    ['Entry', 5, 8]
+    ['Number', 8, 9]
+    ['Dict', 9, 10]
     """
     doctest.testmod()
     print("ok")
