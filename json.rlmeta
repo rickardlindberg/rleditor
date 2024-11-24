@@ -8,7 +8,7 @@ JsonParser {
         | number
         | list
         | dict
-    string    = s '"' #:s char*:xs #:e '"'      -> ["String" s e {xs}]
+    string    = s #:s '"' char*:xs '"' #:e      -> ["String" s e {xs}]
     true      = s #:s 'true' #:e                -> ["True" s e ""]
     false     = s #:s 'false' #:e               -> ["False" s e ""]
     null      = s #:s 'null' #:e                -> ["Null" s e ""]
@@ -23,7 +23,7 @@ JsonParser {
         | dictItem:x (s ',' dictItem)*:xs       -> [x ~xs]
         |                                       -> []
     dictItem  = #:s key:x s ':' document:y #:e  -> ["Entry" s e "" x y]
-    key       = s '"' #:s char*:xs #:e '"'      -> ["Key" s e {xs}]
+    key       = s #:s '"' char*:xs '"' #:e      -> ["Key" s e {xs}]
     char      = !'"' .
     s         = (' ' | '\n')*
 }
