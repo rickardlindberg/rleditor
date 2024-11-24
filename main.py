@@ -203,23 +203,25 @@ class Canvas(Gtk.DrawingArea):
                 context.fill()
 
     def name_to_color(self, name):
-        TEXT = (0.1, 0.1, 0.1)
-        NUMBER = (0.1, 0.1, 0.1)
-        BUILTIN = (0.1, 0.1, 0.5)
-        KEY = (1, 0.0, 0.0)
-        STRING = (0.5, 0.1, 0.1)
-        return {
-            "Document": TEXT,
-            "Dict": TEXT,
-            "List": TEXT,
-            "Entry": TEXT,
-            "Number": NUMBER,
-            "True": BUILTIN,
-            "False": BUILTIN,
-            "Null": BUILTIN,
-            "Key": KEY,
-            "String": STRING,
-        }.get(name, TEXT)
+        names = [
+            "Document",
+            "Dict",
+            "List",
+            "Entry",
+            "Number",
+            "False",
+            "True",
+            "Null",
+            "Key",
+            "String",
+        ]
+        if name in names:
+            index = names.index(name)
+            percent = (index + 1) / len(names)
+            extra = percent * 0.9
+            return (0.1, 1.0 - extra, 0.1 + extra)
+        else:
+            return (0.1, 0.1, 0.1)
 
     def on_motion_notify_event(self, widget, event):
         self.x, self.y = self.translate_coordinates(self, event.x, event.y)
