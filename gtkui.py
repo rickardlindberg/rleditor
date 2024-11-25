@@ -92,7 +92,7 @@ class Canvas(Gtk.DrawingArea):
     def update_src(self, src):
         self.src = src
         try:
-            self.src = pretty(parse(self.src))
+            self.src = json_pretty(json_parse(self.src))
         except SystemExit:
             self.raw_tokens = [
                 [
@@ -103,7 +103,7 @@ class Canvas(Gtk.DrawingArea):
                 ]
             ]
         else:
-            self.raw_tokens = tokens(parse(self.src))
+            self.raw_tokens = json_parse(self.src).tokenize()
         self.queue_draw()
 
     def name_to_color(self, name):
