@@ -34,13 +34,13 @@ class Node:
         pos = self.start
         result = []
         for child in self.children:
-            for name, child_start, child_end in child.tokenize():
+            for name, child_start, child_end, d in child.tokenize():
                 if pos != child_start:
-                    result.append([self.name, pos, child_start])
-                result.append([name, child_start, child_end])
+                    result.append([self.name, pos, child_start, self])
+                result.append([name, child_start, child_end, d])
                 pos = child_end
         if pos != self.end:
-            result.append([self.name, pos, self.end])
+            result.append([self.name, pos, self.end, self])
         return result
 
     def as_list(self):
@@ -50,6 +50,9 @@ class Node:
             self.end,
             self.value,
         ] + [child.as_list() for child in self.children]
+
+    def __repr__(self):
+        return f"Node(name={self.name!r}, start={self.start!r}, end={self.end!r}, ...)"
 
 
 def selftest():
@@ -114,7 +117,7 @@ def selftest():
     Tokens:
 
     >>> for token in tokens(parse("[1, 2]")):
-    ...     print(token)
+    ...     print(token[:3])
     ['List', 0, 1]
     ['Number', 1, 2]
     ['List', 2, 4]
@@ -122,7 +125,7 @@ def selftest():
     ['List', 5, 6]
 
     >>> for token in tokens(parse('{"key": 4}')):
-    ...     print(token)
+    ...     print(token[:3])
     ['Dict', 0, 1]
     ['Key', 1, 6]
     ['Entry', 6, 8]
@@ -155,11 +158,12 @@ class Canvas(Gtk.DrawingArea):
         )
 
     def render_text(self, context, start_x, text):
+        self.tokens = Tokens()
         tree = parse(text)
         ascent, descent, font_height, _, _ = context.font_extents()
         x = start_x
         y = 40
-        for name, start, end in tokens(tree):
+        for name, start, end, t in tokens(tree):
             context.set_source_rgb(0.1, 0.1, 0.1)
             part = text[start:end]
             for index, sub_part in enumerate(part.split("\n")):
@@ -170,8 +174,15 @@ class Canvas(Gtk.DrawingArea):
                 context.move_to(x, y)
                 extents = context.text_extents(sub_part)
                 context.text_path(sub_part)
-                x += extents.x_advance
                 context.fill()
+
+                context.set_source_rgb(0.1, 0.1, 0.1)
+                r = Rectangle(x, y - ascent, extents.x_advance, font_height)
+                r.cairo_path(context)
+                self.tokens.add(Token(rectangle=r, token=t))
+                context.stroke()
+
+                x += extents.x_advance
 
     def name_to_color(self, name):
         names = [
@@ -195,8 +206,50 @@ class Canvas(Gtk.DrawingArea):
             return (0.1, 0.1, 0.1)
 
     def on_motion_notify_event(self, widget, event):
-        self.x, self.y = self.translate_coordinates(self, event.x, event.y)
+        x, y = self.translate_coordinates(self, event.x, event.y)
+        print(self.tokens.hit(x, y))
         self.queue_draw()
+
+
+class Tokens:
+
+    def __init__(self):
+        self.tokens = []
+
+    def add(self, token):
+        self.tokens.append(token)
+
+    def hit(self, x, y):
+        for token in self.tokens:
+            if token.hit(x, y):
+                return token.token
+
+
+class Token:
+
+    def __init__(self, rectangle, token):
+        self.rectangle = rectangle
+        self.token = token
+
+    def hit(self, x, y):
+        return self.rectangle.contains(x, y)
+
+
+class Rectangle:
+
+    def __init__(self, x, y, width, height):
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+
+    def contains(self, x, y):
+        return (self.x <= x <= (self.x + self.width)) and (
+            self.y <= y <= (self.y + self.height)
+        )
+
+    def cairo_path(self, context):
+        context.rectangle(self.x, self.y, self.width, self.height)
 
 
 if __name__ == "__main__":
