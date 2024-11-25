@@ -23,8 +23,6 @@ class Node:
     def as_list(self):
         return [
             self.name,
-            self.start,
-            self.end,
             self.value,
         ] + [child.as_list() for child in self.children]
 

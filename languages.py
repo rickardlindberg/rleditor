@@ -4,43 +4,43 @@ def json_parse(text):
 
     >>> text = ' "hello" '
     >>> json_parse(text).as_list()
-    ['Document', 0, 9, '', ['String', 1, 8, 'hello']]
+    ['Document', '', ['String', 'hello']]
 
     True:
 
     >>> text = ' true '
     >>> json_parse(text).as_list()
-    ['Document', 0, 6, '', ['True', 1, 5, '']]
+    ['Document', '', ['True', '']]
 
     False:
 
     >>> text = ' false '
     >>> json_parse(text).as_list()
-    ['Document', 0, 7, '', ['False', 1, 6, '']]
+    ['Document', '', ['False', '']]
 
     Null:
 
     >>> text = ' null '
     >>> json_parse(text).as_list()
-    ['Document', 0, 6, '', ['Null', 1, 5, '']]
+    ['Document', '', ['Null', '']]
 
     Number:
 
     >>> text = ' 134 '
     >>> json_parse(text).as_list()
-    ['Document', 0, 5, '', ['Number', 1, 4, 134]]
+    ['Document', '', ['Number', 134]]
 
     List:
 
     >>> text = ' [ 1 , 2 , 3 ] '
     >>> json_parse(text).as_list()
-    ['Document', 0, 15, '', ['List', 1, 14, '', ['Number', 3, 4, 1], ['Number', 7, 8, 2], ['Number', 11, 12, 3]]]
+    ['Document', '', ['List', '', ['Number', 1], ['Number', 2], ['Number', 3]]]
 
     Dict:
 
     >>> text = ' { "hello" : 5 } '
     >>> json_parse(text).as_list()
-    ['Document', 0, 17, '', ['Dict', 1, 16, '', ['Entry', 2, 14, '', ['Key', 3, 10, 'hello'], ['Number', 13, 14, 5]]]]
+    ['Document', '', ['Dict', '', ['Entry', '', ['Key', 'hello'], ['Number', 5]]]]
 
     Tokens:
 

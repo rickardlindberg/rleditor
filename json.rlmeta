@@ -38,14 +38,14 @@ JsonPrettyPrinter {
                                                       "\n"
                                                   }
         | -> []
-    Document = . . . prettyInner
-    Dict   = . . . prettyInnerItems:x !.       -> { "{" x "}" }
-    List   = . . . prettyInnerItems:x !.       -> { "[" x "]" }
-    Entry  = . . . prettyInner:key prettyInner:value -> { key ": " value }
-    Number = . . .:value                       -> { value }
-    True   = . . .                             -> "true"
-    False  = . . .                             -> "false"
-    Null   = . . .                             -> "null"
-    Key    = . . .:value                       -> {"\"" value "\""}
-    String = . . .:value                       -> {"\"" value "\""}
+    Document = . prettyInner
+    Dict   = . prettyInnerItems:x !.       -> { "{" x "}" }
+    List   = . prettyInnerItems:x !.       -> { "[" x "]" }
+    Entry  = . prettyInner:key prettyInner:value -> { key ": " value }
+    Number = .:value                       -> { value }
+    True   = .                             -> "true"
+    False  = .                             -> "false"
+    Null   = .                             -> "null"
+    Key    = .:value                       -> {"\"" value "\""}
+    String = .:value                       -> {"\"" value "\""}
 }
