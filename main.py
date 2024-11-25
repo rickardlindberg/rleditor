@@ -140,31 +140,34 @@ class Canvas(Gtk.DrawingArea):
 
     def __init__(self):
         Gtk.DrawingArea.__init__(self)
-        self.add_events(self.get_events() | Gdk.EventMask.POINTER_MOTION_MASK)
+        self.add_events(
+            self.get_events()
+            | Gdk.EventMask.POINTER_MOTION_MASK
+            | Gdk.EventMask.KEY_PRESS_MASK
+        )
         self.connect("draw", self.on_draw)
         self.connect("motion-notify-event", self.on_motion_notify_event)
+        self.connect("key-press-event", self.on_key_press_event)
         self.selection = Range(0, 0)
+        self.update_src(' { "hello" : [1, false,\n true, null],\n "there": "hello" } ')
 
     def on_draw(self, widget, context):
         context.set_source_rgb(1, 0.7, 1)
         context.paint()
         context.select_font_face("Monospace")
         context.set_font_size(20)
-        src = ' { "hello" : [1, false,\n true, null],\n "there": "hello" } '
         self.tokens = Tokens()
-        self.render_text(context, 20, src)
         self.render_text(
             context,
-            400,
-            pretty(parse(src)),
+            200,
+            self.src,
         )
 
     def render_text(self, context, start_x, text):
-        tree = parse(text)
         ascent, descent, font_height, _, _ = context.font_extents()
         x = start_x
         y = 40
-        for name, start, end, node in tokens(tree):
+        for name, start, end, node in self.raw_tokens:
             context.set_source_rgb(0.1, 0.1, 0.1)
             part = text[start:end]
             for index, sub_part in enumerate(part.split("\n")):
@@ -191,6 +194,23 @@ class Canvas(Gtk.DrawingArea):
                 context.fill()
 
                 x += extents.x_advance
+
+    def update_src(self, src):
+        self.src = src
+        try:
+            self.src = pretty(parse(self.src))
+        except SystemExit:
+            self.raw_tokens = [
+                [
+                    "",
+                    0,
+                    len(self.src),
+                    Node("", 0, len(self.src), ""),
+                ]
+            ]
+        else:
+            self.raw_tokens = tokens(parse(self.src))
+        self.queue_draw()
 
     def name_to_color(self, name):
         names = [
@@ -221,6 +241,14 @@ class Canvas(Gtk.DrawingArea):
         else:
             self.selection = Range(0, 0)
         self.queue_draw()
+
+    def on_key_press_event(self, widget, event):
+        if event.string:
+            self.update_src(
+                self.src[: self.selection.start]
+                + event.string
+                + self.src[self.selection.end :]
+            )
 
 
 class Range:
@@ -301,7 +329,10 @@ if __name__ == "__main__":
         window = Gtk.Window()
         window.connect("destroy", Gtk.main_quit)
         box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
-        box.pack_start(Canvas(), True, True, 0)
+        canvas = Canvas()
+        box.pack_start(canvas, True, True, 0)
         window.add(box)
         window.show_all()
+        canvas.set_can_focus(True)
+        canvas.grab_focus()
         Gtk.main()
