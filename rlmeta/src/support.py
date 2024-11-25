@@ -163,17 +163,8 @@ class Runtime:
     def concat(self, lists):
         return [x for xs in lists for x in xs]
 
-    def range(self, *args):
-        return Range(*args)
-
-    def token(self, *args):
-        return Token(*args)
-
-    def tokens(self, *args):
-        return Tokens(*args)
-
-    def cut(self, *args):
-        return cut(*args)
+    def Node(self, *args):
+        return Node(*args)
 
 
 class Tokens:

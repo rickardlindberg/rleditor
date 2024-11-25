@@ -14,23 +14,42 @@ def parse(text):
 
 
 def pretty(tree):
-    return compile_chain(["JsonPrettyPrinter.pretty"], tree)
+    return compile_chain(["JsonPrettyPrinter.pretty"], tree.as_list())
 
 
 def tokens(tree):
-    return compile_chain(["SyntaxTokenizer.tokens"], tree)
+    return tree.tokenize()
 
 
-def cut(name, start, end, children):
-    result = []
-    for child_name, child_start, child_end in children:
-        if start != child_start:
-            result.append([name, start, child_start])
-        result.append([child_name, child_start, child_end])
-        start = child_end
-    if start != end:
-        result.append([name, start, end])
-    return result
+class Node:
+
+    def __init__(self, name, start, end, value, children=[]):
+        self.name = name
+        self.start = start
+        self.end = end
+        self.value = value
+        self.children = children
+
+    def tokenize(self):
+        pos = self.start
+        result = []
+        for child in self.children:
+            for name, child_start, child_end in child.tokenize():
+                if pos != child_start:
+                    result.append([self.name, pos, child_start])
+                result.append([name, child_start, child_end])
+                pos = child_end
+        if pos != self.end:
+            result.append([self.name, pos, self.end])
+        return result
+
+    def as_list(self):
+        return [
+            self.name,
+            self.start,
+            self.end,
+            self.value,
+        ] + [child.as_list() for child in self.children]
 
 
 def selftest():
@@ -38,43 +57,43 @@ def selftest():
     String:
 
     >>> text = ' "hello" '
-    >>> parse(text)
+    >>> parse(text).as_list()
     ['Document', 0, 9, '', ['String', 1, 8, 'hello']]
 
     True:
 
     >>> text = ' true '
-    >>> parse(text)
+    >>> parse(text).as_list()
     ['Document', 0, 6, '', ['True', 1, 5, '']]
 
     False:
 
     >>> text = ' false '
-    >>> parse(text)
+    >>> parse(text).as_list()
     ['Document', 0, 7, '', ['False', 1, 6, '']]
 
     Null:
 
     >>> text = ' null '
-    >>> parse(text)
+    >>> parse(text).as_list()
     ['Document', 0, 6, '', ['Null', 1, 5, '']]
 
     Number:
 
     >>> text = ' 134 '
-    >>> parse(text)
+    >>> parse(text).as_list()
     ['Document', 0, 5, '', ['Number', 1, 4, 134]]
 
     List:
 
     >>> text = ' [ 1 , 2 , 3 ] '
-    >>> parse(text)
+    >>> parse(text).as_list()
     ['Document', 0, 15, '', ['List', 1, 14, '', ['Number', 3, 4, 1], ['Number', 7, 8, 2], ['Number', 11, 12, 3]]]
 
     Dict:
 
     >>> text = ' { "hello" : 5 } '
-    >>> parse(text)
+    >>> parse(text).as_list()
     ['Document', 0, 17, '', ['Dict', 1, 16, '', ['Entry', 2, 14, '', ['Key', 3, 10, 'hello'], ['Number', 13, 14, 5]]]]
 
     Full roundtrip example:
