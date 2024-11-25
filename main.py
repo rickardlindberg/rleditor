@@ -143,6 +143,7 @@ class Canvas(Gtk.DrawingArea):
         self.add_events(self.get_events() | Gdk.EventMask.POINTER_MOTION_MASK)
         self.connect("draw", self.on_draw)
         self.connect("motion-notify-event", self.on_motion_notify_event)
+        self.selection = Range(0, 0)
 
     def on_draw(self, widget, context):
         context.set_source_rgb(1, 0.7, 1)
@@ -150,6 +151,7 @@ class Canvas(Gtk.DrawingArea):
         context.select_font_face("Monospace")
         context.set_font_size(20)
         src = ' { "hello" : [1, false,\n true, null],\n "there": "hello" } '
+        self.tokens = Tokens()
         self.render_text(context, 20, src)
         self.render_text(
             context,
@@ -158,29 +160,35 @@ class Canvas(Gtk.DrawingArea):
         )
 
     def render_text(self, context, start_x, text):
-        self.tokens = Tokens()
         tree = parse(text)
         ascent, descent, font_height, _, _ = context.font_extents()
         x = start_x
         y = 40
-        for name, start, end, t in tokens(tree):
+        for name, start, end, node in tokens(tree):
             context.set_source_rgb(0.1, 0.1, 0.1)
             part = text[start:end]
             for index, sub_part in enumerate(part.split("\n")):
                 if index > 0:
                     y += font_height
                     x = start_x
+
+                extents = context.text_extents(sub_part)
+                token = Token(
+                    rectangle=Rectangle(x, y - ascent, extents.x_advance, font_height),
+                    node=node,
+                    range_=Range(start, end),
+                )
+                self.tokens.add(token)
+
+                if token.overlap(self.selection).size > 0:
+                    context.set_source_rgb(0.8, 0.5, 0.8)
+                    token.rectangle.cairo_path(context)
+                    context.fill()
+
                 context.set_source_rgb(*self.name_to_color(name))
                 context.move_to(x, y)
-                extents = context.text_extents(sub_part)
                 context.text_path(sub_part)
                 context.fill()
-
-                context.set_source_rgb(0.1, 0.1, 0.1)
-                r = Rectangle(x, y - ascent, extents.x_advance, font_height)
-                r.cairo_path(context)
-                self.tokens.add(Token(rectangle=r, token=t))
-                context.stroke()
 
                 x += extents.x_advance
 
@@ -207,8 +215,38 @@ class Canvas(Gtk.DrawingArea):
 
     def on_motion_notify_event(self, widget, event):
         x, y = self.translate_coordinates(self, event.x, event.y)
-        print(self.tokens.hit(x, y))
+        foo = self.tokens.hit(x, y)
+        if foo:
+            self.selection = Range(foo.start, foo.end)
+        else:
+            self.selection = Range(0, 0)
         self.queue_draw()
+
+
+class Range:
+
+    def __init__(self, start, end):
+        self.start = start
+        self.end = end
+
+    @property
+    def size(self):
+        return self.end - self.start
+
+    def overlap(self, other):
+        """
+        >>> Range(0, 5).overlap(Range(1, 8))
+        Range(1, 5)
+        """
+        if other.end <= self.start:
+            return Range(0, 0)
+        elif other.start >= self.end:
+            return Range(0, 0)
+        else:
+            return Range(max(self.start, other.start), min(self.end, other.end))
+
+    def __repr__(self):
+        return f"Range({self.start!r}, {self.end!r})"
 
 
 class Tokens:
@@ -222,17 +260,21 @@ class Tokens:
     def hit(self, x, y):
         for token in self.tokens:
             if token.hit(x, y):
-                return token.token
+                return token.node
 
 
 class Token:
 
-    def __init__(self, rectangle, token):
+    def __init__(self, rectangle, node, range_):
         self.rectangle = rectangle
-        self.token = token
+        self.node = node
+        self.range = range_
 
     def hit(self, x, y):
         return self.rectangle.contains(x, y)
+
+    def overlap(self, range_):
+        return self.range.overlap(range_)
 
 
 class Rectangle:
