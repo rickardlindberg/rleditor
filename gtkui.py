@@ -107,7 +107,7 @@ class GtkEditor(Gtk.DrawingArea):
         x, y = self.translate_coordinates(self, event.x, event.y)
         token = self.ui_tokens.hit(x, y)
         if token:
-            self.editor.select(token.node_range)
+            self.editor.select(token.node.range)
         else:
             self.editor.select(Range(0, 0))
         self.queue_draw()

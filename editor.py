@@ -104,33 +104,3 @@ class Token:
         self.range = range_
         self.selection = selection
         self.node = node
-
-    @property
-    def node_range(self):
-        return Range(self.node.start, self.node.end)
-
-
-class Range:
-
-    def __init__(self, start, end):
-        self.start = start
-        self.end = end
-
-    @property
-    def size(self):
-        return self.end - self.start
-
-    def overlap(self, other):
-        """
-        >>> Range(0, 5).overlap(Range(1, 8))
-        Range(1, 5)
-        """
-        if other.end <= self.start:
-            return Range(0, 0)
-        elif other.start >= self.end:
-            return Range(0, 0)
-        else:
-            return Range(max(self.start, other.start), min(self.end, other.end))
-
-    def __repr__(self):
-        return f"Range({self.start!r}, {self.end!r})"
