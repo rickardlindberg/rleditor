@@ -107,9 +107,9 @@ class GtkEditor(Gtk.DrawingArea):
         x, y = self.translate_coordinates(self, event.x, event.y)
         token = self.ui_tokens.hit(x, y)
         if token:
-            self.editor.selection = token.range
+            self.editor.select(token.range)
         else:
-            self.editor.selection = Range(0, 0)
+            self.editor.select(Range(0, 0))
         self.queue_draw()
 
     def on_key_press_event(self, widget, event):

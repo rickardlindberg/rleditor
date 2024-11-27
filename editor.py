@@ -1,11 +1,22 @@
 class Editor:
     """
-    >>> buffer = Editor.from_text("[1,2]", json_parse, json_pretty)
-    >>> print(buffer.text, end="")
-    [
-        1,
-        2
-    ]
+    >>> editor = Editor.from_text("[1,2]", json_parse, json_pretty)
+    >>> for index, line in enumerate(editor.to_lines()):
+    ...     print(f"Line {index+1}")
+    ...     for token in line:
+    ...         print(f"  Token {token.name} {token.text!r}")
+    Line 1
+      Token List '['
+    Line 2
+      Token List '    '
+      Token Number '1'
+      Token List ','
+    Line 3
+      Token List '    '
+      Token Number '2'
+      Token List ''
+    Line 4
+      Token List ']'
     """
 
     @classmethod
@@ -26,7 +37,9 @@ class Editor:
         self.tree = self.parse(self.text)
         self.text = self.pretty(self.tree)
         self.raw_tokens = self.parse(self.text).tokenize()
-        return self.to_lines()
+
+    def select(self, range_):
+        self.selection = range_
 
     def to_lines(self):
         lines = []
