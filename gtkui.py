@@ -54,7 +54,7 @@ class GtkEditor(Gtk.DrawingArea):
         start_x = 20
         x = start_x
         y = 40
-        for line in self.editor.to_lines():
+        for line in self.editor.get_lines():
             for token in line:
                 context.set_source_rgb(0.1, 0.1, 0.1)
                 extents = context.text_extents(token.text)
