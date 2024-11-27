@@ -113,8 +113,9 @@ class GtkEditor(Gtk.DrawingArea):
         self.queue_draw()
 
     def on_key_press_event(self, widget, event):
-        if is_printable(event.string):
-            self.editor.update_text(event.string)
+        unicode = Gdk.keyval_to_unicode(event.keyval)
+        if unicode >= 32:
+            self.editor.update_text(chr(unicode))
             self.queue_draw()
 
 
@@ -154,11 +155,3 @@ class Rectangle:
         return (self.x <= x <= (self.x + self.width)) and (
             self.y <= y <= (self.y + self.height)
         )
-
-
-def is_printable(unicode_character):
-    """
-    >>> is_printable("")
-    False
-    """
-    return len(unicode_character) > 0 and ord(unicode_character) >= 32
