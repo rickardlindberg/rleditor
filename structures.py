@@ -28,9 +28,12 @@ class Node:
 
 class Range:
 
-    def __init__(self, start, end):
+    def __init__(self, start, end=None):
         self.start = start
-        self.end = end
+        if end is None:
+            self.end = start
+        else:
+            self.end = end
 
     @property
     def size(self):

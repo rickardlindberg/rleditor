@@ -34,9 +34,13 @@ class Editor:
         self.text = (
             self.text[: self.selection.start] + text + self.text[self.selection.end :]
         )
-        self.tree = self.parse(self.text)
-        self.text = self.pretty(self.tree)
-        self.raw_tokens = self.parse(self.text).tokenize()
+        self.selection = Range(self.selection.start + len(text))
+        try:
+            self.text = self.pretty(self.parse(self.text))
+        except SystemExit:
+            self.raw_tokens = Node("Unknown", 0, len(self.text), None).tokenize()
+        else:
+            self.raw_tokens = self.parse(self.text).tokenize()
 
     def select(self, range_):
         self.selection = range_
