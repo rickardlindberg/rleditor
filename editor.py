@@ -1,6 +1,6 @@
-class Buffer:
+class Editor:
     """
-    >>> buffer = Buffer.from_text("[1,2]", json_parse, json_pretty)
+    >>> buffer = Editor.from_text("[1,2]", json_parse, json_pretty)
     >>> print(buffer.text, end="")
     [
         1,
@@ -25,6 +25,7 @@ class Buffer:
         )
         self.tree = self.parse(self.text)
         self.text = self.pretty(self.tree)
+        self.raw_tokens = self.parse(self.text).tokenize()
 
 
 class Token:
