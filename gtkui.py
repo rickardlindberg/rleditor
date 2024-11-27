@@ -49,43 +49,38 @@ class GtkEditor(Gtk.DrawingArea):
         context.paint()
         context.select_font_face("Monospace")
         context.set_font_size(20)
-        self.tokens = Tokens()
+        self.ui_tokens = UiTokens()
         ascent, descent, font_height, _, _ = context.font_extents()
         start_x = 20
         x = start_x
         y = 40
-        for name, start, end, node in self.editor.raw_tokens:
-            context.set_source_rgb(0.1, 0.1, 0.1)
-            part = self.editor.text[start:end]
-            for index, sub_part in enumerate(part.split("\n")):
-                if index > 0:
-                    y += font_height
-                    x = start_x
-
-                extents = context.text_extents(sub_part)
-                token = Token(
-                    rectangle=Rectangle(x, y - ascent, extents.x_advance, font_height),
-                    node=node,
-                    range_=Range(start, end),
+        for line in self.editor.to_lines():
+            for token in line:
+                context.set_source_rgb(0.1, 0.1, 0.1)
+                extents = context.text_extents(token.text)
+                rectangle = Rectangle(x, y - ascent, extents.x_advance, font_height)
+                self.ui_tokens.add(
+                    UiToken(
+                        rectangle=rectangle,
+                        token=token,
+                    )
                 )
-                self.tokens.add(token)
-
-                if token.overlap(self.editor.selection).size > 0:
+                if token.selection.size > 0:
                     context.set_source_rgb(0.8, 0.5, 0.8)
                     context.rectangle(
-                        token.rectangle.x,
-                        token.rectangle.y,
-                        token.rectangle.width,
-                        token.rectangle.height,
+                        rectangle.x,
+                        rectangle.y,
+                        rectangle.width,
+                        rectangle.height,
                     )
                     context.fill()
-
-                context.set_source_rgb(*self.name_to_color(name))
+                context.set_source_rgb(*self.name_to_color(token.name))
                 context.move_to(x, y)
-                context.text_path(sub_part)
+                context.text_path(token.text)
                 context.fill()
-
                 x += extents.x_advance
+            y += font_height
+            x = start_x
 
     def name_to_color(self, name):
         names = [
@@ -110,9 +105,9 @@ class GtkEditor(Gtk.DrawingArea):
 
     def on_motion_notify_event(self, widget, event):
         x, y = self.translate_coordinates(self, event.x, event.y)
-        foo = self.tokens.hit(x, y)
-        if foo:
-            self.editor.selection = Range(foo.start, foo.end)
+        token = self.ui_tokens.hit(x, y)
+        if token:
+            self.editor.selection = token.range
         else:
             self.editor.selection = Range(0, 0)
         self.queue_draw()
@@ -121,6 +116,30 @@ class GtkEditor(Gtk.DrawingArea):
         if event.string:
             self.editor.update_text(event.string)
             self.queue_draw()
+
+
+class UiTokens:
+
+    def __init__(self):
+        self.ui_tokens = []
+
+    def add(self, ui_token):
+        self.ui_tokens.append(ui_token)
+
+    def hit(self, x, y):
+        for ui_token in self.ui_tokens:
+            if ui_token.contains(x, y):
+                return ui_token.token
+
+
+class UiToken:
+
+    def __init__(self, rectangle, token):
+        self.rectangle = rectangle
+        self.token = token
+
+    def contains(self, x, y):
+        return self.rectangle.contains(x, y)
 
 
 class Rectangle:

@@ -26,20 +26,35 @@ class Editor:
         self.tree = self.parse(self.text)
         self.text = self.pretty(self.tree)
         self.raw_tokens = self.parse(self.text).tokenize()
+        return self.to_lines()
+
+    def to_lines(self):
+        lines = []
+        for name, start, end, node in self.raw_tokens:
+            text = self.text[start:end]
+            for index, sub_part in enumerate(text.split("\n")):
+                if index > 0 or len(lines) == 0:
+                    lines.append([])
+                lines[-1].append(
+                    Token(
+                        name=name,
+                        text=sub_part,
+                        range_=Range(start, end),
+                        selection=Range(start, end).overlap(self.selection),
+                        node=node,
+                    )
+                )
+        return lines
 
 
 class Token:
 
-    def __init__(self, rectangle, node, range_):
-        self.rectangle = rectangle
-        self.node = node
+    def __init__(self, name, text, range_, selection, node):
+        self.name = name
+        self.text = text
         self.range = range_
-
-    def hit(self, x, y):
-        return self.rectangle.contains(x, y)
-
-    def overlap(self, range_):
-        return self.range.overlap(range_)
+        self.selection = selection
+        self.node = node
 
 
 class Range:
@@ -66,17 +81,3 @@ class Range:
 
     def __repr__(self):
         return f"Range({self.start!r}, {self.end!r})"
-
-
-class Tokens:
-
-    def __init__(self):
-        self.tokens = []
-
-    def add(self, token):
-        self.tokens.append(token)
-
-    def hit(self, x, y):
-        for token in self.tokens:
-            if token.hit(x, y):
-                return token.node
