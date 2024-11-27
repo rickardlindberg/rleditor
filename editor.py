@@ -105,6 +105,10 @@ class Token:
         self.selection = selection
         self.node = node
 
+    @property
+    def node_range(self):
+        return Range(self.node.start, self.node.end)
+
 
 class Range:
 
