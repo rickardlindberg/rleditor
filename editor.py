@@ -57,7 +57,7 @@ class Editor:
                         name=name,
                         text=sub_part,
                         range_=Range(start, end),
-                        selection=Range(start, end).overlap(self.selection),
+                        selection=self.selection,
                         node=node,
                     )
                 )
@@ -106,5 +106,9 @@ class Token:
         self.name = name
         self.text = text
         self.range = range_
-        self.selection = selection
+        self.selection = range_.overlap(selection)
+        if range_.start <= selection.start < range_.end:
+            self.cursor = selection.start - range_.start
+        else:
+            self.cursor = None
         self.node = node

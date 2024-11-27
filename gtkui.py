@@ -74,6 +74,15 @@ class GtkEditor(Gtk.DrawingArea):
                         rectangle.height,
                     )
                     context.fill()
+                if token.cursor is not None:
+                    context.set_source_rgb(0.2, 0.2, 0.2)
+                    context.rectangle(
+                        rectangle.x,
+                        rectangle.y,
+                        2,
+                        rectangle.height,
+                    )
+                    context.fill()
                 context.set_source_rgb(*self.name_to_color(token.name))
                 context.move_to(x, y)
                 context.text_path(token.text)
