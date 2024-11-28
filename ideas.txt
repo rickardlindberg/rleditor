@@ -1,0 +1,30 @@
+* Initial spark: A code editor should do all the formatting for you. If it
+  parses, you work in an AST, and it pretty prints it for you. There is no
+  need to think about syntax. But it's all still text if you need.
+
+* How to combine text only with AST edit operations?
+
+* Implement node cursor/selection movements: select parent, select
+  next/previous sibling.
+
+* Code is beautiful. A code editor should show that beauty.
+
+* Range matching in RLMeta: `{ .*:xs }:range -> Node(range xs)`.
+
+* F-string syntax in RLMeta instead of `{}`.
+
+* Ncurses UI.
+
+* `gtkui.py` -> `gtkgui.py` and `gui.py`.
+
+* Custom editor: select text, choose edit as color, it parses the color, opens
+  a color editor, and pretty prints the color in the parsed format.
+
+* The editor sholuld have Ctrl+T. It should show a file tree + the parsed
+  structure for each file. Should be able to filter on type in search bar.
+
+* The editor should have a status line. Show the structure that is being
+  edited: `file.py / class / method / ...`. And row, col. And save status.
+
+* Dogfeeding: edit `ideas.txt` with rledit. Define parser for this list,
+  markdown-ish format. Try to edit it and see where it breaks.
