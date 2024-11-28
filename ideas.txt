@@ -28,3 +28,18 @@
 
 * Dogfeeding: edit `ideas.txt` with rledit. Define parser for this list,
   markdown-ish format. Try to edit it and see where it breaks.
+
+* Special syntax for OOP-classes?
+
+    class Point:
+        fields x, y
+        constructors:
+            origin -> Point(x=0, y=0)
+        methods:
+            move dx dy -> Point(x=x+dx, ...)
+
+    class Point
+        field x
+        field y
+        constructor origin = x=0, y=0
+        def move dx dy = ...
