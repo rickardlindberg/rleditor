@@ -51,15 +51,21 @@ class GtkEditor(Gtk.DrawingArea):
         context.set_font_size(20)
         self.gui_tokens = GuiTokens()
         ascent, descent, font_height, _, _ = context.font_extents()
-        start_x = 20
+
+        padding = 4
+        start_x = padding
         x = start_x
-        y = 40
+        y = padding + ascent
+
+        context.set_source_rgb(0.9, 0.6, 0.9)
+        context.rectangle(0, 0, widget.get_allocated_width(), font_height + 2 * padding)
+        context.fill()
 
         context.set_source_rgb(0.1, 0.1, 0.1)
         context.move_to(x, y)
         context.text_path(" > ".join(self.editor.get_path()))
         context.fill()
-        y += font_height
+        y += font_height + 2 * padding
         x = start_x
 
         for line in self.editor.get_lines():
