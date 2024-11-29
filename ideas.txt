@@ -1,5 +1,3 @@
-* `gtkui.py` -> `gtkgui.py` and `gui.py`.
-
 * Custom editor: select text, choose edit as color, it parses the color, opens
   a color editor, and pretty prints the color in the parsed format.
 

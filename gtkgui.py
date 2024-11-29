@@ -49,7 +49,7 @@ class GtkEditor(Gtk.DrawingArea):
         context.paint()
         context.select_font_face("Monospace")
         context.set_font_size(20)
-        self.ui_tokens = UiTokens()
+        self.gui_tokens = GuiTokens()
         ascent, descent, font_height, _, _ = context.font_extents()
         start_x = 20
         x = start_x
@@ -59,8 +59,8 @@ class GtkEditor(Gtk.DrawingArea):
                 context.set_source_rgb(0.1, 0.1, 0.1)
                 extents = context.text_extents(token.text)
                 rectangle = Rectangle(x, y - ascent, extents.x_advance, font_height)
-                self.ui_tokens.add(
-                    UiToken(
+                self.gui_tokens.add(
+                    GuiToken(
                         rectangle=rectangle,
                         token=token,
                     )
@@ -114,7 +114,7 @@ class GtkEditor(Gtk.DrawingArea):
 
     def on_motion_notify_event(self, widget, event):
         x, y = self.translate_coordinates(self, event.x, event.y)
-        token = self.ui_tokens.hit(x, y)
+        token = self.gui_tokens.hit(x, y)
         if token:
             self.editor.select(token.node.range)
         else:
@@ -126,41 +126,3 @@ class GtkEditor(Gtk.DrawingArea):
         if unicode >= 32:
             self.editor.update_text(chr(unicode))
             self.queue_draw()
-
-
-class UiTokens:
-
-    def __init__(self):
-        self.ui_tokens = []
-
-    def add(self, ui_token):
-        self.ui_tokens.append(ui_token)
-
-    def hit(self, x, y):
-        for ui_token in self.ui_tokens:
-            if ui_token.contains(x, y):
-                return ui_token.token
-
-
-class UiToken:
-
-    def __init__(self, rectangle, token):
-        self.rectangle = rectangle
-        self.token = token
-
-    def contains(self, x, y):
-        return self.rectangle.contains(x, y)
-
-
-class Rectangle:
-
-    def __init__(self, x, y, width, height):
-        self.x = x
-        self.y = y
-        self.width = width
-        self.height = height
-
-    def contains(self, x, y):
-        return (self.x <= x <= (self.x + self.width)) and (
-            self.y <= y <= (self.y + self.height)
-        )
