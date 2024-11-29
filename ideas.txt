@@ -1,3 +1,5 @@
+* Fix display of cursor so that left/right behaves as expected.
+
 * Implement node cursor/selection movements: select parent, select
   next/previous sibling.
 
