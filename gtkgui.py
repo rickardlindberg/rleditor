@@ -54,6 +54,14 @@ class GtkEditor(Gtk.DrawingArea):
         start_x = 20
         x = start_x
         y = 40
+
+        context.set_source_rgb(0.1, 0.1, 0.1)
+        context.move_to(x, y)
+        context.text_path(" > ".join(self.editor.get_path()))
+        context.fill()
+        y += font_height
+        x = start_x
+
         for line in self.editor.get_lines():
             for token in line:
                 context.set_source_rgb(0.1, 0.1, 0.1)

@@ -5,6 +5,16 @@ class Node:
         self.range = Range(start, end)
         self.value = value
         self.children = children
+        self.parent = None
+        for child in self.children:
+            child.parent = self
+
+    def get_path(self):
+        if self.parent is None:
+            prefix = []
+        else:
+            prefix = self.parent.get_path()
+        return prefix + [self.name]
 
     def tokenize(self):
         pos = self.range.start

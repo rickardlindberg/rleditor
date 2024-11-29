@@ -45,6 +45,18 @@ class Editor:
     def select(self, range_):
         self.selection = range_
 
+    def get_path(self):
+        """
+        >>> editor = Editor.from_text("[1,2]", json_parse, json_pretty)
+        >>> editor.select(Range(1))
+        >>> editor.get_path()
+        ['Document', 'List']
+        """
+        for name, start, end, node in self.raw_tokens:
+            if start <= self.selection.start <= end:
+                return node.get_path()
+        return []
+
     def get_lines(self):
         lines = Lines()
         for name, start, end, node in self.raw_tokens:
