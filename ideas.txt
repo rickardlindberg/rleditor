@@ -1,17 +1,16 @@
+* Implement node cursor/selection movements: select parent, select
+  next/previous sibling.
+
+* Status line should show row, col.
+
 * Custom editor: select text, choose edit as color, it parses the color, opens
   a color editor, and pretty prints the color in the parsed format.
-
-* The editor should have a status line. Show the structure that is being
-  edited: `file.py / class / method / ...`. And row, col. And save status.
 
 * Initial spark: A code editor should do all the formatting for you. If it
   parses, you work in an AST, and it pretty prints it for you. There is no
   need to think about syntax. But it's all still text if you need.
 
 * How to combine text only with AST edit operations?
-
-* Implement node cursor/selection movements: select parent, select
-  next/previous sibling.
 
 * Code is beautiful. A code editor should show that beauty.
 

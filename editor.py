@@ -45,6 +45,12 @@ class Editor:
     def select(self, range_):
         self.selection = range_
 
+    def cursor_forward(self):
+        self.select(Range(min(len(self.text), self.selection.start + 1)))
+
+    def cursor_backward(self):
+        self.select(Range(max(0, self.selection.start - 1)))
+
     def get_path(self):
         """
         >>> editor = Editor.from_text("[1,2]", json_parse, json_pretty)

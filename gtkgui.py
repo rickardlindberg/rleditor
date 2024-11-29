@@ -137,6 +137,12 @@ class GtkEditor(Gtk.DrawingArea):
 
     def on_key_press_event(self, widget, event):
         unicode = Gdk.keyval_to_unicode(event.keyval)
-        if unicode >= 32:
+        if event.keyval == 65361:
+            self.editor.cursor_backward()
+        elif event.keyval == 65363:
+            self.editor.cursor_forward()
+        elif unicode >= 32:
             self.editor.update_text(chr(unicode))
-            self.queue_draw()
+        else:
+            return
+        self.queue_draw()
