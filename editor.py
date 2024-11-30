@@ -54,12 +54,25 @@ class Editor:
     def get_path(self):
         """
         >>> editor = Editor.from_text("[1,2]", json_parse, json_pretty)
-        >>> editor.select(Range(1))
+        >>> editor.select(Range(6))
+        >>> print(editor.text, end="")
+        [
+            1,
+            2
+        ]
+        >>> for name, start, end, node in editor.raw_tokens:
+        ...     print(f"{name}: {start}-{end}")
+        List: 0-6
+        Number: 6-7
+        List: 7-13
+        Number: 13-14
+        List: 14-16
+
         >>> editor.get_path()
-        ['Document', 'List']
+        ['Document', 'List', 'Number']
         """
         for name, start, end, node in self.raw_tokens:
-            if start <= self.selection.start <= end:
+            if start <= self.selection.start < end:
                 return node.get_path()
         return []
 
