@@ -1,23 +1,4 @@
 class Editor:
-    """
-    >>> editor = Editor.from_text("[1,2]", json_parse, json_pretty)
-    >>> for line in editor.get_lines():
-    ...     print(f"Line {line.number}")
-    ...     for token in line:
-    ...         print(f"  Token {token.name} {token.text!r}")
-    Line 1
-      Token List '['
-    Line 2
-      Token List '    '
-      Token Number '1'
-      Token List ','
-    Line 3
-      Token List '    '
-      Token Number '2'
-      Token List ''
-    Line 4
-      Token List ']'
-    """
 
     @classmethod
     def from_text(cls, text, parse, pretty):
@@ -77,21 +58,44 @@ class Editor:
         return []
 
     def get_lines(self):
+        """
+        >>> editor = Editor.from_text("[1]", json_parse, json_pretty)
+        >>> print(editor.text, end="")
+        [
+            1
+        ]
+        >>> for line in editor.get_lines():
+        ...     print(f"Line {line.number}")
+        ...     for token in line:
+        ...         print(f"  Token {token.name} {token.text!r} {token.range}")
+        Line 1
+          Token List '[' Range(0, 1)
+        Line 2
+          Token List '    ' Range(2, 6)
+          Token Number '1' Range(6, 7)
+        Line 3
+          Token List ']' Range(8, 9)
+        """
         lines = Lines()
         for name, start, end, node in self.raw_tokens:
             text = self.text[start:end]
+            pos = start
             for index, sub_part in enumerate(text.split("\n")):
                 if index > 0:
                     lines.newline()
-                lines.add_token(
-                    Token(
-                        name=name,
-                        text=sub_part,
-                        range_=Range(start, end),
-                        selection=self.selection,
-                        node=node,
+                    pos += 1
+                range_ = Range(pos, pos + len(sub_part))
+                if range_.size > 0:
+                    lines.add_token(
+                        Token(
+                            name=name,
+                            text=sub_part,
+                            range_=range_,
+                            selection=self.selection,
+                            node=node,
+                        )
                     )
-                )
+                    pos += range_.size
         return list(lines.get())
 
 
