@@ -1,4 +1,4 @@
-* Fix display of cursor so that left/right behaves as expected.
+* Cursor is not shown if the selection is at the end of the file.
 
 * Implement node cursor/selection movements: select parent, select
   next/previous sibling.
