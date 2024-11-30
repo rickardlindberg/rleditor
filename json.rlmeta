@@ -22,8 +22,8 @@ JsonParser {
     dictItems =
         | dictItem:x (s ',' dictItem)*:xs       -> [x ~xs]
         |                                       -> []
-    dictItem  = #:s key:x s ':' document:y #:e  -> Node("Entry" s e "" [x y])
-    key       = s #:s '"' char*:xs '"' #:e      -> Node("Key" s e {xs})
+    dictItem  = s #:s key:x s ':' document:y #:e  -> Node("Entry" s e "" [x y])
+    key       = #:s '"' char*:xs '"' #:e      -> Node("Key" s e {xs})
     char      = !'"' .
     s         = (' ' | '\n')*
 }
