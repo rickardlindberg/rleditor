@@ -70,9 +70,11 @@ class Editor:
         ...         print(f"  Token {token.name} {token.text!r} {token.range}")
         Line 1
           Token List '[' Range(0, 1)
+          Token List '' Range(1, 2)
         Line 2
           Token List '    ' Range(2, 6)
           Token Number '1' Range(6, 7)
+          Token List '' Range(7, 8)
         Line 3
           Token List ']' Range(8, 9)
         """
@@ -82,6 +84,15 @@ class Editor:
             pos = start
             for index, sub_part in enumerate(text.split("\n")):
                 if index > 0:
+                    lines.add_token(
+                        Token(
+                            name=name,
+                            text="",
+                            range_=Range(pos, pos + 1),
+                            selection=self.selection,
+                            node=node,
+                        )
+                    )
                     lines.newline()
                     pos += 1
                 range_ = Range(pos, pos + len(sub_part))
