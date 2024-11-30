@@ -91,7 +91,7 @@ class GtkEditor(Gtk.DrawingArea):
                 if token.cursor is not None:
                     context.set_source_rgb(0.2, 0.2, 0.2)
                     context.rectangle(
-                        rectangle.x,
+                        rectangle.x + rectangle.width * token.cursor_offset_percent,
                         rectangle.y,
                         2,
                         rectangle.height,

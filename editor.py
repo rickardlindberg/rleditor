@@ -147,3 +147,7 @@ class Token:
         else:
             self.cursor = None
         self.node = node
+
+    @property
+    def cursor_offset_percent(self):
+        return self.cursor / self.range.size
