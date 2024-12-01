@@ -70,13 +70,14 @@ class Editor:
         ...         print(f"  Token {token.name} {token.text!r} {token.range}")
         Line 1
           Token List '[' Range(0, 1)
-          Token List '' Range(1, 2)
+          Token Invisible '\\\\n' Range(1, 2)
         Line 2
           Token List '    ' Range(2, 6)
           Token Number '1' Range(6, 7)
-          Token List '' Range(7, 8)
+          Token Invisible '\\\\n' Range(7, 8)
         Line 3
           Token List ']' Range(8, 9)
+          Token Invisible 'EOF' Range(9, 9)
         """
         lines = Lines()
         for name, start, end, node in self.raw_tokens:
@@ -86,8 +87,8 @@ class Editor:
                 if index > 0:
                     lines.add_token(
                         Token(
-                            name=name,
-                            text="",
+                            name="Invisible",
+                            text="\\n",
                             range_=Range(pos, pos + 1),
                             selection=self.selection,
                             node=node,
@@ -107,6 +108,15 @@ class Editor:
                         )
                     )
                     pos += range_.size
+        lines.add_token(
+            Token(
+                name="Invisible",
+                text="EOF",
+                range_=Range(end),
+                selection=self.selection,
+                node=node,
+            )
+        )
         return list(lines.get())
 
 
@@ -147,18 +157,37 @@ class Line:
 
 
 class Token:
+    """
+    >>> Token(
+    ...     name="Invisible",
+    ...     text="EOF",
+    ...     range_=Range(4),
+    ...     selection=Range(0),
+    ...     node=None,
+    ... ).cursor is None
+    True
+
+    >>> Token(
+    ...     name="Invisible",
+    ...     text="EOF",
+    ...     range_=Range(4),
+    ...     selection=Range(4),
+    ...     node=None,
+    ... ).cursor
+    0
+    """
 
     def __init__(self, name, text, range_, selection, node):
         self.name = name
         self.text = text
         self.range = range_
         self.selection = range_.overlap(selection)
-        if range_.start <= selection.start < range_.end:
+        if range_.size == 0 and range_.start == selection.start:
+            self.cursor = 0
+            self.cursor_offset_percent = 0
+        elif range_.start <= selection.start < range_.end:
             self.cursor = selection.start - range_.start
+            self.cursor_offset_percent = self.cursor / self.range.size
         else:
             self.cursor = None
         self.node = node
-
-    @property
-    def cursor_offset_percent(self):
-        return self.cursor / self.range.size

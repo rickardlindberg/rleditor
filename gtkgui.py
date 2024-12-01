@@ -118,6 +118,8 @@ class GtkEditor(Gtk.DrawingArea):
             "Key",
             "String",
         ]
+        if name == "Invisible":
+            return (0.9, 0.6, 0.9)
         if name in names:
             index = names.index(name)
             percent = (index + 1) / len(names)
