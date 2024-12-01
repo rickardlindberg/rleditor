@@ -1,3 +1,7 @@
+* Dogfeeding: edit `ideas.txt` with rledit. Define parser for this list,
+  markdown-ish format. Try to edit it and see where it breaks. Add open/save
+  functionality.
+
 * I expect to move to the next list item when selecting the next sibling.
 
 * Status line should show row, col.
@@ -21,9 +25,6 @@
 
 * The editor should have Ctrl+T. It should show a file tree + the parsed
   structure for each file. Should be able to filter on type in search bar.
-
-* Dogfeeding: edit `ideas.txt` with rledit. Define parser for this list,
-  markdown-ish format. Try to edit it and see where it breaks.
 
 * Special syntax for OOP-classes?
 
