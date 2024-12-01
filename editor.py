@@ -73,7 +73,8 @@ class Editor:
                 1,
                 2
             ]
-        }>
+        }
+        >
         """
         node = self.get_selected_node()
         if node.range.is_same(self.selection) and node.parent:
@@ -137,6 +138,7 @@ class Editor:
         List: 7-13
         Number: 13-14
         List: 14-16
+        Document: 16-17
 
         >>> editor.get_path()
         ['Document', 'List', 'Number']
@@ -163,7 +165,9 @@ class Editor:
           Token Invisible '\\\\n' Range(7, 8)
         Line 3
           Token List ']' Range(8, 9)
-          Token Invisible 'EOF' Range(9, 9)
+          Token Invisible '\\\\n' Range(9, 10)
+        Line 4
+          Token Invisible 'EOF' Range(10, 10)
         """
         lines = Lines()
         for name, start, end, node in self.raw_tokens:

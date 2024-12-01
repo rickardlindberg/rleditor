@@ -29,7 +29,7 @@ JsonParser {
 }
 
 JsonPrettyPrinter {
-    pretty = %:x !.  -> x
+    pretty = %:x !.  -> { x "\n" }
     prettyInner = [%:x !.] -> x
     prettyInnerItems =
         | prettyInner:x (prettyInner:y -> {",\n" y})*:xs -> {
