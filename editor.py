@@ -135,10 +135,7 @@ class Editor:
         >>> editor.get_path()
         ['Document', 'List', 'Number']
         """
-        for name, start, end, node in self.raw_tokens:
-            if start <= self.selection.start < end:
-                return node.get_path()
-        return []
+        return self.get_selected_node().get_path()
 
     def get_lines(self):
         """
