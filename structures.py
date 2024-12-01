@@ -45,6 +45,12 @@ class Range:
         else:
             self.end = end
 
+    def contains(self, value):
+        if value == self.start == self.end:
+            return True
+        else:
+            return self.start <= value < self.end
+
     @property
     def size(self):
         return self.end - self.start

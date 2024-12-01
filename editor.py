@@ -80,7 +80,7 @@ class Editor:
     def get_parent_node_from_selection(self):
         for line in self.get_lines():
             for token in line:
-                if token.range.start <= self.selection.start < token.range.end:
+                if token.range.contains(self.selection.start):
                     return self.get_node_with_selection_expand(token.node)
         raise ValueError("Could not find node with selection.")
 
