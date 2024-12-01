@@ -67,5 +67,8 @@ class Range:
         else:
             return Range(max(self.start, other.start), min(self.end, other.end))
 
+    def is_same(self, other):
+        return self.start == other.start and self.end == other.end
+
     def __repr__(self):
         return f"Range({self.start!r}, {self.end!r})"

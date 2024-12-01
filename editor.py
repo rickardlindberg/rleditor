@@ -75,22 +75,22 @@ class Editor:
             ]
         }>
         """
-        self.selection = self.get_parent_node_from_selection().range
+        node = self.get_selected_node()
+        if node.range.is_same(self.selection) and node.parent:
+            self.selection = node.parent.range
+        else:
+            self.selection = node.range
 
-    def get_parent_node_from_selection(self):
+    def get_selected_node(self):
         for line in self.get_lines():
             for token in line:
                 if token.range.contains(self.selection.start):
-                    return self.get_node_with_selection_expand(token.node)
+                    return self.get_outermost_node(token.node)
         raise ValueError("Could not find node with selection.")
 
-    def get_node_with_selection_expand(self, node):
-        if (
-            self.selection.start == node.range.start
-            and self.selection.end >= node.range.end
-            and node.parent
-        ):
-            return self.get_node_with_selection_expand(node.parent)
+    def get_outermost_node(self, node):
+        if node.parent and node.parent.range.is_same(self.selection):
+            return self.get_outermost_node(node.parent)
         else:
             return node
 
