@@ -81,6 +81,12 @@ class Editor:
         else:
             self.selection = node.range
 
+    def select_next_node(self):
+        self.selection = self.get_selected_node().get_next_sibling().range
+
+    def select_previous_node(self):
+        self.selection = self.get_selected_node().get_previous_sibling().range
+
     def get_selected_node(self):
         for line in self.get_lines():
             for token in line:

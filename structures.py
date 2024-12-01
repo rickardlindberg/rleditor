@@ -16,6 +16,25 @@ class Node:
             prefix = self.parent.get_path()
         return prefix + [self.name]
 
+    def get_next_sibling(self):
+        if self.parent is None:
+            return self
+        else:
+            return self.parent.get_sibling(self, +1)
+
+    def get_previous_sibling(self):
+        if self.parent is None:
+            return self
+        else:
+            return self.parent.get_sibling(self, -1)
+
+    def get_sibling(self, child, offset):
+        index = 0
+        for index, x in enumerate(self.children):
+            if x is child:
+                break
+        return self.children[(index + offset) % len(self.children)]
+
     def tokenize(self):
         pos = self.range.start
         result = []

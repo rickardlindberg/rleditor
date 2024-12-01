@@ -145,6 +145,10 @@ class GtkEditor(Gtk.DrawingArea):
             self.editor.cursor_forward()
         elif event.state & Gdk.ModifierType.CONTROL_MASK and unicode == ord("a"):
             self.editor.selection_expand()
+        elif event.state & Gdk.ModifierType.CONTROL_MASK and unicode == ord("n"):
+            self.editor.select_next_node()
+        elif event.state & Gdk.ModifierType.CONTROL_MASK and unicode == ord("p"):
+            self.editor.select_previous_node()
         elif unicode >= 32:
             self.editor.update_text(chr(unicode))
         else:
