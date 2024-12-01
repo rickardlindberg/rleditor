@@ -1,5 +1,4 @@
-* Implement node cursor/selection movements: select parent, select
-  next/previous sibling.
+* I expect to move to the next list item when selecting the next sibling.
 
 * Status line should show row, col.
 
