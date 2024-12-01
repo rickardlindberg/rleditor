@@ -143,6 +143,8 @@ class GtkEditor(Gtk.DrawingArea):
             self.editor.cursor_backward()
         elif event.keyval == 65363:
             self.editor.cursor_forward()
+        elif event.state & Gdk.ModifierType.CONTROL_MASK and unicode == ord("a"):
+            self.editor.selection_expand()
         elif unicode >= 32:
             self.editor.update_text(chr(unicode))
         else:

@@ -23,8 +23,91 @@ class Editor:
         else:
             self.raw_tokens = self.parse(self.text).tokenize()
 
+    def selection_expand(self):
+        """
+        >>> editor = Editor.from_text('{"key": [1,2]}', json_parse, json_pretty)
+        >>> editor.select(Range(23))
+        >>> print(editor.text_with_selection_markers, end="")
+        {
+            "key": [
+                <>1,
+                2
+            ]
+        }
+        >>> editor.selection_expand()
+        >>> print(editor.text_with_selection_markers, end="")
+        {
+            "key": [
+                <1>,
+                2
+            ]
+        }
+        >>> editor.selection_expand()
+        >>> print(editor.text_with_selection_markers, end="")
+        {
+            "key": <[
+                1,
+                2
+            ]>
+        }
+        >>> editor.selection_expand()
+        >>> print(editor.text_with_selection_markers, end="")
+        {
+            <"key": [
+                1,
+                2
+            ]>
+        }
+        >>> editor.selection_expand()
+        >>> print(editor.text_with_selection_markers, end="")
+        <{
+            "key": [
+                1,
+                2
+            ]
+        }>
+        >>> editor.selection_expand()
+        >>> print(editor.text_with_selection_markers, end="")
+        <{
+            "key": [
+                1,
+                2
+            ]
+        }>
+        """
+        self.selection = self.get_parent_node_from_selection().range
+
+    def get_parent_node_from_selection(self):
+        for line in self.get_lines():
+            for token in line:
+                if token.range.start <= self.selection.start < token.range.end:
+                    return self.get_node_with_selection_expand(token.node)
+        raise ValueError("Could not find node with selection.")
+
+    def get_node_with_selection_expand(self, node):
+        if (
+            self.selection.start == node.range.start
+            and self.selection.end >= node.range.end
+            and node.parent
+        ):
+            return self.get_node_with_selection_expand(node.parent)
+        else:
+            return node
+
     def select(self, range_):
         self.selection = range_
+
+    @property
+    def text_with_selection_markers(self):
+        return "".join(
+            [
+                self.text[: self.selection.start],
+                "<",
+                self.text[self.selection.start : self.selection.end],
+                ">",
+                self.text[self.selection.end :],
+            ]
+        )
 
     def cursor_forward(self):
         self.select(Range(min(len(self.text), self.selection.start + 1)))
