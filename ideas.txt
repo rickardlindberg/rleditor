@@ -40,3 +40,14 @@
         field y
         constructor origin = x=0, y=0
         def move dx dy = ...
+
+* GitHub Copilot: UI shows text to be inserted in blue. Similar to "Invisible"
+  style in rleditor.
+
+* There are two categories of operations. Node operations and text operations.
+  Examples:
+
+  Type -> Text operation
+  Next sibling -> Node operation
+  Move -> Node operation
+  Move character -> Text operation
