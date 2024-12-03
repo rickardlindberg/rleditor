@@ -22,6 +22,16 @@ class Editor:
             with open(self.path, "w") as f:
                 f.write(self.text)
 
+    def delete_whole_or_before(self):
+        if self.selection.size == 0:
+            self.selection.extend_left(1)
+        self.update_text("")
+
+    def delete_whole_or_after(self):
+        if self.selection.size == 0:
+            self.selection.extend_right(1)
+        self.update_text("")
+
     def update_text(self, text):
         self.text = (
             self.text[: self.selection.start] + text + self.text[self.selection.end :]

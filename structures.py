@@ -70,6 +70,12 @@ class Range:
         else:
             return self.start <= value < self.end
 
+    def extend_left(self, amount):
+        self.start -= amount
+
+    def extend_right(self, amount):
+        self.end += amount
+
     @property
     def size(self):
         return self.end - self.start

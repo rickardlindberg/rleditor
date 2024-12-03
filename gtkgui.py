@@ -145,6 +145,10 @@ class GtkEditor(Gtk.DrawingArea):
             self.editor.cursor_backward()
         elif event.keyval == 65363:
             self.editor.cursor_forward()
+        elif event.keyval == 65288:  # backspace
+            self.editor.delete_whole_or_before()
+        elif event.keyval == 65535:  # del
+            self.editor.delete_whole_or_after()
         elif event.state & Gdk.ModifierType.CONTROL_MASK and unicode == ord("a"):
             self.editor.selection_expand()
         elif event.state & Gdk.ModifierType.CONTROL_MASK and unicode == ord("n"):
