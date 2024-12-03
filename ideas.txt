@@ -1,3 +1,5 @@
+* Show save status in statusbar.
+
 * Dogfeeding: edit `ideas.txt` with rledit. Define parser for this list,
   markdown-ish format. Try to edit it and see where it breaks. Add open/save
   functionality.
