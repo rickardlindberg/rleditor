@@ -1,8 +1,11 @@
-* Show save status in statusbar.
-
 * Dogfeeding: edit `ideas.txt` with rledit. Define parser for this list,
-  markdown-ish format. Try to edit it and see where it breaks. Add open/save
-  functionality.
+  markdown-ish format. Try to edit it and see where it breaks.
+
+* Initial selection is not at 0. Why?
+
+* Click to select that character.
+
+* Show save status in statusbar.
 
 * I expect to move to the next list item when selecting the next sibling.
 
