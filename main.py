@@ -7,4 +7,4 @@ if __name__ == "__main__":
         doctest.testmod(optionflags=doctest.REPORT_NDIFF | doctest.FAIL_FAST)
         print("ok")
     else:
-        GtkUi.create().run()
+        GtkUi.create().run(sys.argv[1:])

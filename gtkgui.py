@@ -12,16 +12,18 @@ class GtkUi:
     def create(cls):
         return cls()
 
-    def run(self):
-        window = Gtk.Window()
-        window.connect("destroy", Gtk.main_quit)
-        gtk_editor = GtkEditor(
-            Editor.from_text(
+    def run(self, args):
+        if len(args) == 1:
+            editor = Editor.from_file(args[0])
+        else:
+            editor = Editor.from_text(
                 ' { "hello" : [1, false,\n true, null],\n "there": "hello" } ',
                 json_parse,
                 json_pretty,
             )
-        )
+        window = Gtk.Window()
+        window.connect("destroy", Gtk.main_quit)
+        gtk_editor = GtkEditor(editor)
         box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
         box.pack_start(gtk_editor, True, True, 0)
         window.add(box)
@@ -149,6 +151,8 @@ class GtkEditor(Gtk.DrawingArea):
             self.editor.select_next_node()
         elif event.state & Gdk.ModifierType.CONTROL_MASK and unicode == ord("p"):
             self.editor.select_previous_node()
+        elif event.state & Gdk.ModifierType.CONTROL_MASK and unicode == ord("s"):
+            self.editor.save()
         elif unicode >= 32:
             self.editor.update_text(chr(unicode))
         else:

@@ -4,12 +4,23 @@ class Editor:
     def from_text(cls, text, parse, pretty):
         return cls(text, parse, pretty)
 
-    def __init__(self, text, parse, pretty):
+    @classmethod
+    def from_file(cls, path):
+        with open(path) as f:
+            return cls(f.read(), json_parse, json_pretty, path=path)
+
+    def __init__(self, text, parse, pretty, path=None):
         self.text = ""
         self.selection = Range(0, 0)
         self.parse = parse
         self.pretty = pretty
+        self.path = path
         self.update_text(text)
+
+    def save(self):
+        if self.path is not None:
+            with open(self.path, "w") as f:
+                f.write(self.text)
 
     def update_text(self, text):
         self.text = (
