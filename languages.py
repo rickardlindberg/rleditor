@@ -80,3 +80,24 @@ def json_pretty(tree):
     }
     """
     return compile_chain(["JsonPrettyPrinter.pretty"], tree.as_list())
+
+
+def txt_list_parse(text):
+    """
+    >>> text = "* hello\\n* there\\n  hoho"
+    >>> txt_list_parse(text).as_list()
+    ['Document', '', ['Item', '', ['Line', 'hello']], ['Item', '', ['Line', 'there'], ['Line', 'hoho']]]
+    """
+    return compile_chain(["TxtListParser.file"], text)
+
+
+def txt_list_pretty(tree):
+    """
+    >>> text = "* hello\\n* there\\n  hoho"
+    >>> print(txt_list_pretty(txt_list_parse(text)), end="")
+    * hello
+    * there
+      hoho
+    <BLANKLINE>
+    """
+    return compile_chain(["TxtListPrettyPrinter.pretty"], tree.as_list())

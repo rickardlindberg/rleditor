@@ -1,0 +1,29 @@
+TxtListParser {
+    file = #:s item*:xs #:e !. -> Node("Document" s e "" xs)
+    item =
+        #:s
+        '* '
+        restLine:x
+        indentedLine*:xs
+        #:e
+        -> Node("Item" s e "" [x ~xs])
+    restLine = #:s (!'\n' .)*:xs lineEnd #:e -> Node("Line" s e { xs })
+    lineEnd =
+        | '\n' -> "\n"
+        | !. -> ""
+    indentedLine =
+        | #:s '\n' #:e -> Node("Line" s e "")
+        | '  ' restLine
+}
+
+TxtListPrettyPrinter {
+    pretty = %:x !.  -> { x "\n" }
+    prettyInner = [%:x !.] -> x
+    Document = . firstItem:x restItem*:ys -> { x ys }
+    firstItem = prettyInner
+    restItem = prettyInner
+    Item = . firstLine:x restLine*:ys -> { x ys }
+    Line = .:value -> { value "\n" }
+    firstLine = prettyInner:x -> { "* " x }
+    restLine = prettyInner:x -> { "  " x }
+}

@@ -7,7 +7,13 @@ class Editor:
     @classmethod
     def from_file(cls, path):
         with open(path) as f:
-            return cls(f.read(), json_parse, json_pretty, path=path)
+            if path.endswith(".txt"):
+                parse = txt_list_parse
+                pretty = txt_list_pretty
+            else:
+                parse = json_parse
+                pretty = json_pretty
+            return cls(f.read(), parse, pretty, path=path)
 
     def __init__(self, text, parse, pretty, path=None):
         self.text = ""
