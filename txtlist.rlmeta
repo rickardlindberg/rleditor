@@ -17,7 +17,7 @@ TxtListParser {
 }
 
 TxtListPrettyPrinter {
-    pretty = %:x !.  -> { x "\n" }
+    pretty = %:x !.  -> x
     prettyInner = [%:x !.] -> x
     Document = . firstItem:x restItem*:ys -> { x ys }
     firstItem = prettyInner
@@ -25,5 +25,7 @@ TxtListPrettyPrinter {
     Item = . firstLine:x restLine*:ys -> { x ys }
     Line = .:value -> { value "\n" }
     firstLine = prettyInner:x -> { "* " x }
-    restLine = prettyInner:x -> { "  " x }
+    restLine =
+        | [['Line'!.] [!.]] -> "\n"
+        | prettyInner:x -> { "  " x }
 }

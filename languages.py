@@ -98,6 +98,5 @@ def txt_list_pretty(tree):
     * hello
     * there
       hoho
-    <BLANKLINE>
     """
     return compile_chain(["TxtListPrettyPrinter.pretty"], tree.as_list())
