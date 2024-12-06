@@ -149,6 +149,8 @@ class GtkEditor(Gtk.DrawingArea):
             self.editor.delete_whole_or_before()
         elif event.keyval == 65535:  # del
             self.editor.delete_whole_or_after()
+        elif event.keyval == 65293:  # enter
+            self.editor.update_text("\n")
         elif event.state & Gdk.ModifierType.CONTROL_MASK and unicode == ord("a"):
             self.editor.selection_expand()
         elif event.state & Gdk.ModifierType.CONTROL_MASK and unicode == ord("n"):
