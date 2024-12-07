@@ -1,4 +1,10 @@
 class Editor:
+    """
+    Initial selection is at 0:
+
+    >>> Editor("text", json_parse, json_pretty).selection
+    Range(0, 0)
+    """
 
     @classmethod
     def from_text(cls, text, parse, pretty):
@@ -22,6 +28,7 @@ class Editor:
         self.pretty = pretty
         self.path = path
         self.update_text(text)
+        self.selection = Range(0, 0)
 
     def save(self):
         if self.path is not None:

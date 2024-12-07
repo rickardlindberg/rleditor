@@ -5,8 +5,6 @@
 
 * Ctrl+Enter should insert a node.
 
-* Initial selection is not at 0. Why?
-
 * Click to select that character.
 
 * Show save status in statusbar.
