@@ -9,6 +9,11 @@ class Node:
         for child in self.children:
             child.parent = self
 
+    def get_first_child(self):
+        for child in self.children:
+            return child
+        return self
+
     def get_path(self):
         if self.parent is None:
             prefix = []

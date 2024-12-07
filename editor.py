@@ -109,6 +109,9 @@ class Editor:
         else:
             self.selection = node.range
 
+    def selection_contract(self):
+        self.selection = self.get_selected_node().get_first_child().range
+
     def select_next_node(self):
         self.selection = self.get_selected_node().get_next_sibling().range
 

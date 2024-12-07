@@ -1,8 +1,6 @@
 * A pretty print can sometimes undo a pending edit operation.
   How to work around that?
 
-* Ctrl+h/j/k/l -> expand, down, up, contract (move in at first)
-
 * Should remove ending space in list paragraphs.
 
 * Ctrl+Enter should insert a node.

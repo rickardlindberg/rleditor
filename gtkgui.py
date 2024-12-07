@@ -151,11 +151,13 @@ class GtkEditor(Gtk.DrawingArea):
             self.editor.delete_whole_or_after()
         elif event.keyval == 65293:  # enter
             self.editor.update_text("\n")
-        elif event.state & Gdk.ModifierType.CONTROL_MASK and unicode == ord("a"):
+        elif event.state & Gdk.ModifierType.CONTROL_MASK and unicode == ord("h"):
             self.editor.selection_expand()
-        elif event.state & Gdk.ModifierType.CONTROL_MASK and unicode == ord("n"):
+        elif event.state & Gdk.ModifierType.CONTROL_MASK and unicode == ord("l"):
+            self.editor.selection_contract()
+        elif event.state & Gdk.ModifierType.CONTROL_MASK and unicode == ord("j"):
             self.editor.select_next_node()
-        elif event.state & Gdk.ModifierType.CONTROL_MASK and unicode == ord("p"):
+        elif event.state & Gdk.ModifierType.CONTROL_MASK and unicode == ord("k"):
             self.editor.select_previous_node()
         elif event.state & Gdk.ModifierType.CONTROL_MASK and unicode == ord("s"):
             self.editor.save()
