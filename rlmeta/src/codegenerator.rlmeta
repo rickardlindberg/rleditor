@@ -1,6 +1,7 @@
 CodeGenerator {
-  asts          = ast*:xs !.             -> { xs                                         }
-  ast           = [%:x !.]               -> x
+  astInner      = %:x !.                 -> x
+  ast           = [astInner:x]           -> x
+  File          = ast*:xs                -> { xs }
   Namespace     = .:x ast*:ys            -> x:namespace                                         ->
                                             []:ids                                              ->
                                             []:matchers                                         ->
