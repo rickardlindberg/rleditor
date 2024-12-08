@@ -1,6 +1,6 @@
 * A pretty print can sometimes undo a pending edit operation.
   How to work around that? Context-sensitive snippets that insert a complete
-  syntax element?
+  syntax element? Only pretty print when leaving insert mode?
 
 * Operation to move a node up/down.
 
