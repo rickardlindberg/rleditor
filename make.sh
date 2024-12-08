@@ -10,7 +10,6 @@ python ./rlmeta/rlmeta.py \
     --copy gui.py \
     --copy editor.py \
     --copy languages.py \
-    --copy structures.py \
     --copy main.py > rleditor.py
 
 python rleditor.py --selftest

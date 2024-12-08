@@ -1,4 +1,4 @@
-SUPPORT = 'rules = {}\n\n\nclass Stream:\n\n    def __init__(self, items):\n        self.items = items\n        self.index = 0\n        self.latest_error = None\n        self.scope = None\n\n    def operator_or(self, matchers):\n        for matcher in matchers:\n            backtrack_index = self.index\n            try:\n                return matcher.run(self)\n            except MatchError:\n                self.index = backtrack_index\n        self.error("no or match")\n\n    def operator_and(self, matchers):\n        result = self.action()\n        for matcher in matchers:\n            result = matcher.run(self)\n        return result\n\n    def operator_star(self, matcher):\n        results = []\n        while True:\n            backtrack_index = self.index\n            try:\n                results.append(matcher.run(self))\n            except MatchError:\n                self.index = backtrack_index\n                return self.action(lambda self: [x.eval(self.runtime) for x in results])\n\n    def operator_not(self, matcher):\n        backtrack_index = self.index\n        try:\n            matcher.run(self)\n        except MatchError:\n            return self.action()\n        finally:\n            self.index = backtrack_index\n        self.error("not matched")\n\n    def action(self, fn=lambda self: None):\n        return SemanticAction(self.scope, fn)\n\n    def with_scope(self, matcher):\n        current_scope = self.scope\n        self.scope = {}\n        try:\n            return matcher.run(self)\n        finally:\n            self.scope = current_scope\n\n    def bind(self, name, semantic_action):\n        self.scope[name] = semantic_action\n        return semantic_action\n\n    def match_list(self, matcher):\n        if self.index < len(self.items):\n            items, index = self.items, self.index\n            try:\n                self.items = self.items[self.index]\n                self.index = 0\n                result = matcher.run(self)\n                index += 1\n            finally:\n                self.items, self.index = items, index\n            return result\n        self.error("no list found")\n\n    def match_call_rule(self, namespace):\n        name = namespace + "." + self.items[self.index]\n        if name in rules:\n            rule = rules[name]\n            self.index += 1\n            return rule.run(self)\n        else:\n            self.error("unknown rule")\n\n    def match_pos(self):\n        index = self.index\n        return self.action(lambda self: index)\n\n    def match(self, fn, description):\n        if self.index < len(self.items):\n            item = self.items[self.index]\n            if fn(item):\n                self.index += 1\n                return self.action(lambda self: item)\n        self.error(f"expected {description}")\n\n    def error(self, name):\n        if not self.latest_error or self.index > self.latest_error[2]:\n            self.latest_error = (name, self.items, self.index)\n        raise MatchError(*self.latest_error)\n\n\nclass MatchError(Exception):\n\n    def __init__(self, name, items, index):\n        Exception.__init__(self, name)\n        self.items = items\n        self.index = index\n\n\nclass SemanticAction:\n\n    def __init__(self, scope, fn):\n        self.scope = scope\n        self.fn = fn\n\n    def eval(self, runtime):\n        self.runtime = runtime\n        return self.fn(self)\n\n    def bind(self, name, value, continuation):\n        self.runtime = self.runtime.bind(name, value)\n        return continuation()\n\n    def lookup(self, name):\n        if name in self.scope:\n            return self.scope[name].eval(self.runtime)\n        else:\n            return self.runtime.lookup(name)\n\n\nclass Runtime:\n\n    def __init__(self, extra={"len": len, "repr": repr, "int": int}):\n        self.vars = extra\n\n    def bind(self, name, value):\n        return Runtime(dict(self.vars, **{name: value}))\n\n    def lookup(self, name):\n        if name in self.vars:\n            return self.vars[name]\n        else:\n            return getattr(self, name)\n\n    def append(self, list, thing):\n        list.append(thing)\n\n    def join(self, items, delimiter=""):\n        return delimiter.join(\n            self.join(item, delimiter) if isinstance(item, list) else str(item)\n            for item in items\n        )\n\n    def indent(self, text, prefix="    "):\n        return "".join(prefix + line for line in text.splitlines(True))\n\n    def splice(self, depth, item):\n        if depth == 0:\n            return [item]\n        else:\n            return self.concat([self.splice(depth - 1, subitem) for subitem in item])\n\n    def concat(self, lists):\n        return [x for xs in lists for x in xs]\n\n    def Node(self, *args):\n        return Node(*args)\n\n\nclass Tokens:\n\n    def __init__(self, tokens):\n        self.tokens = tokens\n\n    def as_text(self):\n        return "".join(token.text for token in self.tokens)\n\n    def __repr__(self):\n        return "\\n".join(["Tokens:"] + [f"{token!r}" for token in self.tokens])\n\n\nclass Token:\n\n    def __init__(self, name, text):\n        self.name = name\n        self.text = text\n\n    def __repr__(self):\n        return f"Token({self.name!r}, {self.text!r})"\n\n\nclass Range:\n\n    def __init__(self, start, end):\n        self.start = start\n        self.end = end\n\n    def __repr__(self):\n        return f"Range({self.start!r}, {self.end!r})"\n\n\ndef compile_chain(grammars, source):\n    import os\n    import sys\n    import pprint\n\n    runtime = Runtime()\n    for rule in grammars:\n        try:\n            source = rules[rule].run(Stream(source)).eval(runtime)\n        except MatchError as e:\n            marker = "<ERROR POSITION>"\n            if os.isatty(sys.stderr.fileno()):\n                marker = f"\\033[0;31m{marker}\\033[0m"\n            if isinstance(e.items, str):\n                stream_string = e.items[: e.index] + marker + e.items[e.index :]\n            else:\n                stream_string = pprint.pformat(e.items)\n            sys.exit(\n                "ERROR: {}\\nPOSITION: {}\\nSTREAM:\\n{}".format(\n                    str(e), e.index, runtime.indent(stream_string)\n                )\n            )\n    return source\n'
+SUPPORT = 'rules = {}\n\n\nclass Stream:\n\n    def __init__(self, items):\n        self.items = items\n        self.index = 0\n        self.latest_error = None\n        self.scope = None\n\n    def operator_or(self, matchers):\n        for matcher in matchers:\n            backtrack_index = self.index\n            try:\n                return matcher.run(self)\n            except MatchError:\n                self.index = backtrack_index\n        self.error("no or match")\n\n    def operator_and(self, matchers):\n        result = self.action()\n        for matcher in matchers:\n            result = matcher.run(self)\n        return result\n\n    def operator_star(self, matcher):\n        results = []\n        while True:\n            backtrack_index = self.index\n            try:\n                results.append(matcher.run(self))\n            except MatchError:\n                self.index = backtrack_index\n                return self.action(lambda self: [x.eval(self.runtime) for x in results])\n\n    def operator_not(self, matcher):\n        backtrack_index = self.index\n        try:\n            matcher.run(self)\n        except MatchError:\n            return self.action()\n        finally:\n            self.index = backtrack_index\n        self.error("not matched")\n\n    def action(self, fn=lambda self: None):\n        return SemanticAction(self.scope, fn)\n\n    def with_scope(self, matcher):\n        current_scope = self.scope\n        self.scope = {}\n        try:\n            return matcher.run(self)\n        finally:\n            self.scope = current_scope\n\n    def bind(self, name, semantic_action):\n        self.scope[name] = semantic_action\n        return semantic_action\n\n    def match_list(self, matcher):\n        if self.index < len(self.items):\n            items, index = self.items, self.index\n            try:\n                self.items = self.items[self.index]\n                self.index = 0\n                result = matcher.run(self)\n                index += 1\n            finally:\n                self.items, self.index = items, index\n            return result\n        self.error("no list found")\n\n    def match_call_rule(self, namespace):\n        name = namespace + "." + self.items[self.index]\n        if name in rules:\n            rule = rules[name]\n            self.index += 1\n            return rule.run(self)\n        else:\n            self.error("unknown rule")\n\n    def match_pos(self):\n        index = self.index\n        return self.action(lambda self: index)\n\n    def match(self, fn, description):\n        if self.index < len(self.items):\n            item = self.items[self.index]\n            if fn(item):\n                self.index += 1\n                return self.action(lambda self: item)\n        self.error(f"expected {description}")\n\n    def error(self, name):\n        if not self.latest_error or self.index > self.latest_error[2]:\n            self.latest_error = (name, self.items, self.index)\n        raise MatchError(*self.latest_error)\n\n\nclass MatchError(Exception):\n\n    def __init__(self, name, items, index):\n        Exception.__init__(self, name)\n        self.items = items\n        self.index = index\n\n\nclass SemanticAction:\n\n    def __init__(self, scope, fn):\n        self.scope = scope\n        self.fn = fn\n\n    def eval(self, runtime):\n        self.runtime = runtime\n        return self.fn(self)\n\n    def bind(self, name, value, continuation):\n        self.runtime = self.runtime.bind(name, value)\n        return continuation()\n\n    def lookup(self, name):\n        if name in self.scope:\n            return self.scope[name].eval(self.runtime)\n        else:\n            return self.runtime.lookup(name)\n\n\nclass Runtime:\n\n    def __init__(self, extra={"len": len, "repr": repr, "int": int}):\n        self.vars = extra\n\n    def bind(self, name, value):\n        return Runtime(dict(self.vars, **{name: value}))\n\n    def lookup(self, name):\n        if name in self.vars:\n            return self.vars[name]\n        else:\n            return getattr(self, name)\n\n    def append(self, list, thing):\n        list.append(thing)\n\n    def join(self, items, delimiter=""):\n        return delimiter.join(\n            self.join(item, delimiter) if isinstance(item, list) else str(item)\n            for item in items\n        )\n\n    def indent(self, text, prefix="    "):\n        return "".join(prefix + line for line in text.splitlines(True))\n\n    def splice(self, depth, item):\n        if depth == 0:\n            return [item]\n        else:\n            return self.concat([self.splice(depth - 1, subitem) for subitem in item])\n\n    def concat(self, lists):\n        return [x for xs in lists for x in xs]\n\n    def Node(self, *args):\n        return Node(*args)\n\n\nclass Node:\n\n    def __init__(self, name, start, end, value, children=[]):\n        self.name = name\n        self.range = Range(start, end)\n        self.value = value\n        self.children = children\n        self.parent = None\n        for child in self.children:\n            child.parent = self\n\n    def get_first_child(self):\n        for child in self.children:\n            return child\n        return self\n\n    def get_path(self):\n        if self.parent is None:\n            prefix = []\n        else:\n            prefix = self.parent.get_path()\n        return prefix + [self.name]\n\n    def get_next_sibling(self):\n        if self.parent is None:\n            return self\n        else:\n            return self.parent.get_sibling(self, +1)\n\n    def get_previous_sibling(self):\n        if self.parent is None:\n            return self\n        else:\n            return self.parent.get_sibling(self, -1)\n\n    def get_sibling(self, child, offset):\n        index = 0\n        for index, x in enumerate(self.children):\n            if x is child:\n                break\n        return self.children[(index + offset) % len(self.children)]\n\n    def tokenize(self):\n        pos = self.range.start\n        result = []\n        for child in self.children:\n            for name, child_start, child_end, d in child.tokenize():\n                if pos != child_start:\n                    result.append([self.name, pos, child_start, self])\n                result.append([name, child_start, child_end, d])\n                pos = child_end\n        if pos != self.range.end:\n            result.append([self.name, pos, self.range.end, self])\n        return result\n\n    def as_list(self):\n        return [\n            self.name,\n            self.value,\n        ] + [child.as_list() for child in self.children]\n\n\nclass Range:\n\n    def __init__(self, start, end=None):\n        self.start = start\n        if end is None:\n            self.end = start\n        else:\n            self.end = end\n\n    def contains(self, value):\n        if value == self.start == self.end:\n            return True\n        else:\n            return self.start <= value < self.end\n\n    def extend_left(self, amount):\n        self.start -= amount\n\n    def extend_right(self, amount):\n        self.end += amount\n\n    @property\n    def size(self):\n        return self.end - self.start\n\n    def overlap(self, other):\n        """\n        >>> Range(0, 5).overlap(Range(1, 8))\n        Range(1, 5)\n        """\n        if other.end <= self.start:\n            return Range(0, 0)\n        elif other.start >= self.end:\n            return Range(0, 0)\n        else:\n            return Range(max(self.start, other.start), min(self.end, other.end))\n\n    def is_same(self, other):\n        return self.start == other.start and self.end == other.end\n\n    def __repr__(self):\n        return f"Range({self.start!r}, {self.end!r})"\n\n\ndef compile_chain(grammars, source):\n    import os\n    import sys\n    import pprint\n\n    runtime = Runtime()\n    for rule in grammars:\n        try:\n            source = rules[rule].run(Stream(source)).eval(runtime)\n        except MatchError as e:\n            marker = "<ERROR POSITION>"\n            if os.isatty(sys.stderr.fileno()):\n                marker = f"\\033[0;31m{marker}\\033[0m"\n            if isinstance(e.items, str):\n                stream_string = e.items[: e.index] + marker + e.items[e.index :]\n            else:\n                stream_string = pprint.pformat(e.items)\n            sys.exit(\n                "ERROR: {}\\nPOSITION: {}\\nSTREAM:\\n{}".format(\n                    str(e), e.index, runtime.indent(stream_string)\n                )\n            )\n    return source\n'
 rules = {}
 
 
@@ -168,33 +168,107 @@ class Runtime:
         return Node(*args)
 
 
-class Tokens:
+class Node:
 
-    def __init__(self, tokens):
-        self.tokens = tokens
-
-    def as_text(self):
-        return "".join(token.text for token in self.tokens)
-
-    def __repr__(self):
-        return "\n".join(["Tokens:"] + [f"{token!r}" for token in self.tokens])
-
-
-class Token:
-
-    def __init__(self, name, text):
+    def __init__(self, name, start, end, value, children=[]):
         self.name = name
-        self.text = text
+        self.range = Range(start, end)
+        self.value = value
+        self.children = children
+        self.parent = None
+        for child in self.children:
+            child.parent = self
 
-    def __repr__(self):
-        return f"Token({self.name!r}, {self.text!r})"
+    def get_first_child(self):
+        for child in self.children:
+            return child
+        return self
+
+    def get_path(self):
+        if self.parent is None:
+            prefix = []
+        else:
+            prefix = self.parent.get_path()
+        return prefix + [self.name]
+
+    def get_next_sibling(self):
+        if self.parent is None:
+            return self
+        else:
+            return self.parent.get_sibling(self, +1)
+
+    def get_previous_sibling(self):
+        if self.parent is None:
+            return self
+        else:
+            return self.parent.get_sibling(self, -1)
+
+    def get_sibling(self, child, offset):
+        index = 0
+        for index, x in enumerate(self.children):
+            if x is child:
+                break
+        return self.children[(index + offset) % len(self.children)]
+
+    def tokenize(self):
+        pos = self.range.start
+        result = []
+        for child in self.children:
+            for name, child_start, child_end, d in child.tokenize():
+                if pos != child_start:
+                    result.append([self.name, pos, child_start, self])
+                result.append([name, child_start, child_end, d])
+                pos = child_end
+        if pos != self.range.end:
+            result.append([self.name, pos, self.range.end, self])
+        return result
+
+    def as_list(self):
+        return [
+            self.name,
+            self.value,
+        ] + [child.as_list() for child in self.children]
 
 
 class Range:
 
-    def __init__(self, start, end):
+    def __init__(self, start, end=None):
         self.start = start
-        self.end = end
+        if end is None:
+            self.end = start
+        else:
+            self.end = end
+
+    def contains(self, value):
+        if value == self.start == self.end:
+            return True
+        else:
+            return self.start <= value < self.end
+
+    def extend_left(self, amount):
+        self.start -= amount
+
+    def extend_right(self, amount):
+        self.end += amount
+
+    @property
+    def size(self):
+        return self.end - self.start
+
+    def overlap(self, other):
+        """
+        >>> Range(0, 5).overlap(Range(1, 8))
+        Range(1, 5)
+        """
+        if other.end <= self.start:
+            return Range(0, 0)
+        elif other.start >= self.end:
+            return Range(0, 0)
+        else:
+            return Range(max(self.start, other.start), min(self.end, other.end))
+
+    def is_same(self, other):
+        return self.start == other.start and self.end == other.end
 
     def __repr__(self):
         return f"Range({self.start!r}, {self.end!r})"
