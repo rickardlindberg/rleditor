@@ -1,5 +1,10 @@
 * A pretty print can sometimes undo a pending edit operation.
-  How to work around that?
+  How to work around that? Context-sensitive snippets that insert a complete
+  syntax element?
+
+* Operation to move a node up/down.
+
+* The structure for a list item is not lines, but paragraphs.
 
 * Should remove ending space in list paragraphs.
 
