@@ -1,5 +1,5 @@
 JsonParser {
-    file      = #:s document:x s #:e !.         -> Node("Document" s e "" [x])
+    file      = < document:x s >:r !.         -> Node("Document" r "" [x])
     document  =
         | string
         | true
@@ -8,22 +8,22 @@ JsonParser {
         | number
         | list
         | dict
-    string    = s #:s '"' char*:xs '"' #:e      -> Node("String" s e {xs})
-    true      = s #:s 'true' #:e                -> Node("True" s e "")
-    false     = s #:s 'false' #:e               -> Node("False" s e "")
-    null      = s #:s 'null' #:e                -> Node("Null" s e "")
-    number    = s #:s digit:x digit*:xs #:e     -> Node("Number" s e int({[x ~xs]}))
+    string    = s < '"' char*:xs '"' >:r      -> Node("String" r {xs})
+    true      = s < 'true' >:r                -> Node("True" r "")
+    false     = s < 'false' >:r               -> Node("False" r "")
+    null      = s < 'null' >:r                -> Node("Null" r "")
+    number    = s < digit:x digit*:xs >:r     -> Node("Number" r int({[x ~xs]}))
     digit     = '0'-'9'
-    list      = s #:s '[' items:x s ']' #:e     -> Node("List" s e "" x)
+    list      = s < '[' items:x s ']' >:r     -> Node("List" r "" x)
     items     =
         | document:x (s ',' document)*:xs       -> [x ~xs]
         |                                       -> []
-    dict      = s #:s '{' dictItems:x s '}' #:e -> Node("Dict" s e "" x)
+    dict      = s < '{' dictItems:x s '}' >:r -> Node("Dict" r "" x)
     dictItems =
         | dictItem:x (s ',' dictItem)*:xs       -> [x ~xs]
         |                                       -> []
-    dictItem  = s #:s key:x s ':' document:y #:e  -> Node("Entry" s e "" [x y])
-    key       = #:s '"' char*:xs '"' #:e      -> Node("Key" s e {xs})
+    dictItem  = s < key:x s ':' document:y >:r  -> Node("Entry" r "" [x y])
+    key       = < '"' char*:xs '"' >:r      -> Node("Key" r {xs})
     char      = !'"' .
     s         = (' ' | '\n')*
 }

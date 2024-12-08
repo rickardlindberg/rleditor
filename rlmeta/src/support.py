@@ -72,6 +72,12 @@ class Stream:
             return result
         self.error("no list found")
 
+    def match_range(self, matcher):
+        start = self.index
+        matcher.run(self)
+        end = self.index
+        return self.action(lambda self: Range(start, end))
+
     def match_call_rule(self, namespace):
         name = namespace + "." + self.items[self.index]
         if name in rules:
@@ -80,10 +86,6 @@ class Stream:
             return rule.run(self)
         else:
             self.error("unknown rule")
-
-    def match_pos(self):
-        index = self.index
-        return self.action(lambda self: index)
 
     def match(self, fn, description):
         if self.index < len(self.items):
@@ -163,8 +165,8 @@ class Runtime:
     def concat(self, lists):
         return [x for xs in lists for x in xs]
 
-    def Node(self, *args):
-        return Node(*args)
+    def Node(self, name, range_, value, children=[]):
+        return Node(name, range_.start, range_.end, value, children)
 
 
 class Node:

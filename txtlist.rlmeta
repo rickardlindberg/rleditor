@@ -1,18 +1,18 @@
 TxtListParser {
-    file = #:s item*:xs #:e !. -> Node("Document" s e "" xs)
+    file = < item*:xs >:r !. -> Node("Document" r "" xs)
     item =
-        #:s
+        <
         '* '
         restLine:x
         indentedLine*:xs
-        #:e
-        -> Node("Item" s e "" [x ~xs])
-    restLine = #:s (!'\n' .)*:xs lineEnd #:e -> Node("Line" s e { xs })
+        >:r
+        -> Node("Item" r "" [x ~xs])
+    restLine = < (!'\n' .)*:xs lineEnd >:r -> Node("Line" r { xs })
     lineEnd =
         | '\n' -> "\n"
         | !. -> ""
     indentedLine =
-        | #:s '\n' #:e -> Node("Line" s e "")
+        | < '\n' >:r -> Node("Line" r "")
         | '  ' restLine
 }
 
