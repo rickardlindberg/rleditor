@@ -100,3 +100,17 @@ def txt_list_pretty(tree):
       hoho
     """
     return compile_chain(["TxtListPrettyPrinter.pretty"], tree.as_list())
+
+
+def rlmeta_parse(text):
+    return compile_chain(["Parser.file"], text)
+
+
+def rlmeta_pretty(tree):
+    """
+    >>> print(rlmeta_pretty(rlmeta_parse("Grammar { foo = . }")), end="")
+    Grammar {
+      foo =
+    }
+    """
+    return compile_chain(["PrettyPrinter.pretty"], tree.as_list())

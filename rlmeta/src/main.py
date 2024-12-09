@@ -18,7 +18,7 @@ if __name__ == "__main__":
             sys.stdout.write("{} = {}\n".format(args.pop(0), repr(read(args.pop(0)))))
         elif command == "--compile":
             node = compile_chain(["Parser.file"], read(args.pop(0)))
-            output = compile_chain(["CodeGenerator.astInner"], node)
+            output = compile_chain(["CodeGenerator.astInner"], node.as_list())
             sys.stdout.write(output)
         else:
             sys.exit("ERROR: Unknown command '{}'".format(command))

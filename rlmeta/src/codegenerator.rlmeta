@@ -1,12 +1,12 @@
 CodeGenerator {
   astInner      = %:x !.                 -> x
   ast           = [astInner:x]           -> x
-  File          = ast*:xs                -> { xs }
+  File          = . ast*:xs !.                -> { xs }
   Namespace     = .:x ast*:ys            -> x:namespace                                         ->
                                             []:ids                                              ->
                                             []:matchers                                         ->
                                             { matchers ys }
-  Rule          = .:x ast:y              -> { "rules['" namespace "." x "'] = " y "\n"   }
+  Rule          = [.:x ast:y]              -> { "rules['" namespace "." x "'] = " y "\n"   }
   Or            = matcher:m astList:x    -> { "stream.operator_or([" x "])"              }:body -> m
   Scope         = matcher:m ast:x        -> { "stream.with_scope(" x ")"                 }:body -> m
   And           = matcher:m astList:x    -> { "stream.operator_and([" x "])"             }:body -> m

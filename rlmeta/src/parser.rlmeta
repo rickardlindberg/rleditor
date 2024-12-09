@@ -1,10 +1,10 @@
 Parser {
   file =
-    | (space namespace)*:xs space !.          -> ["File" ~xs]
+    | < (space namespace)*:xs space >:r !.          -> Node("File" r "" xs)
   namespace =
-    | name:x space '{' rule*:ys space '}'     -> ["Namespace" x ~ys]
+    | < name:x space '{' rule*:ys space '}' >:r     -> Node("Namespace" r x ys)
   rule =
-    | name:x space '=' choice:y               -> ["Rule" x y]
+    | < name:x space '=' choice:y >:r               -> Node("Rule" r [x y])
   choice =
     | (space '|')?
       sequence:x (space '|' sequence)*:xs     -> ["Or" x ~xs]

@@ -16,6 +16,9 @@ class Editor:
             if path.endswith(".txt"):
                 parse = txt_list_parse
                 pretty = txt_list_pretty
+            elif path.endswith(".rlmeta"):
+                parse = rlmeta_parse
+                pretty = rlmeta_pretty
             else:
                 parse = json_parse
                 pretty = json_pretty

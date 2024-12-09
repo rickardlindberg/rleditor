@@ -1,0 +1,7 @@
+PrettyPrinter {
+    pretty = %:x !. -> x
+    prettyInner = [pretty:x] -> x
+    File = . prettyInner*:xs -> { xs }
+    Namespace = .:name prettyInner*:xs -> { name " {\n" xs "}\n" }
+    Rule = [.:name .*] -> { "  " name " =\n" }
+}
