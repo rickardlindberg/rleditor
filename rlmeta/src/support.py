@@ -6,6 +6,7 @@ class Stream:
     def __init__(self, items):
         self.items = items
         self.index = 0
+        self.nesting = tuple()
         self.latest_error = None
         self.scope = None
 
@@ -61,14 +62,15 @@ class Stream:
 
     def match_list(self, matcher):
         if self.index < len(self.items):
-            items, index = self.items, self.index
+            items, index, nesting = self.items, self.index, self.nesting
             try:
+                self.nesting = self.nesting + (self.index,)
                 self.items = self.items[self.index]
                 self.index = 0
                 result = matcher.run(self)
                 index += 1
             finally:
-                self.items, self.index = items, index
+                self.items, self.index, self.nesting = items, index, nesting
             return result
         self.error("no list found")
 
@@ -102,9 +104,12 @@ class Stream:
         self.error(f"expected {description}")
 
     def error(self, name):
-        if not self.latest_error or self.index > self.latest_error[2]:
-            self.latest_error = (name, self.items, self.index)
-        raise MatchError(*self.latest_error)
+        if not self.latest_error or (
+            (self.nesting + (self.index,))
+            > (self.latest_error[3] + (self.latest_error[2],))
+        ):
+            self.latest_error = (name, self.items, self.index, self.nesting)
+        raise MatchError(*self.latest_error[:-1])
 
 
 class MatchError(Exception):
