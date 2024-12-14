@@ -23,12 +23,12 @@ Parser {
   expr2 =
     | <>:r name:x !(space '=')                             -> Node("MatchRule" r x)
     | <>:r space char:x '-' char:y                         -> Node("Placeholder" r ["MatchObject" ["Range" x y]])
-    | <>:r space '\'' (!'\'' matchChar)*:xs '\''           -> Node("Placeholder" r ["And" "" ~xs])
+    | <>:r space '\'' (!'\'' matchChar)*:xs '\''           -> Node("And" r "" xs)
     | <>:r space '.'                                       -> Node("Placeholder" r ["MatchObject" ["Any"]])
     | <>:r space '(' choice:x space ')'                    -> Node("Paren" r "" [x])
     | <>:r space '<' (expr:x -> listify(x))*:xs space '>'  -> Node("Placeholder" r ["MatchRange" ["And" "" ~xs]])
   matchChar =
-    | innerChar:x                             -> ["MatchObject" ["Eq" x]]
+    | <>:r innerChar:x                             -> Node("Placeholder" r ["MatchObject" ["Eq" x]])
   maybeAction =
     | < actionExpr:x >:r                      -> [Node("Action" r "" [x])]
     |                                         -> []
