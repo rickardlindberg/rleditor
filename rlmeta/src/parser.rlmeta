@@ -40,12 +40,12 @@ Parser {
     | <>:r space string:x                          -> Node("String" r x)
     | <>:r space '[' hostListItem*:xs space ']'    -> Node("List" r "" xs)
     | <>:r space '{' hostExpr*:xs space '}'        -> Node("Format" r "" xs)
-    | <>:r var:x space '(' (hostExpr:x -> listify(x))*:ys space ')'  -> Node("Placeholder" r ["Call" x ~ys])
-    | <>:r var:x                                   -> Node("Placeholder" r x)
+    | <>:r var:x space '(' (hostExpr:x -> listify(x))*:ys space ')'  -> Node("Placeholder" r ["Call" listify(x) ~ys])
+    | var
   hostListItem =
     | <>:r space '~'*:ys hostExpr:x                -> Node("ListItem" r len(ys) [x])
   var =
-    | name:x !(space '=')                     -> ["Lookup" x]
+    | < name:x >:r !(space '=')                     -> Node("Lookup" r x)
   string    = '"'  (!'"'  innerChar)*:xs '"'  -> { xs }
   char      = '\''  !'\'' innerChar  :x  '\'' -> x
   innerChar = '\\' escape | .
