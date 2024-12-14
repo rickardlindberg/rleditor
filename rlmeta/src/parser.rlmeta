@@ -37,7 +37,7 @@ Parser {
       (space ':' name | -> ""):y actionExpr:z -> Node("Set" r y [x z])
     | <>:r space '->' hostExpr:x              -> x
   hostExpr =
-    | <>:r space string:x                          -> Node("Placeholder" r ["String" x])
+    | <>:r space string:x                          -> Node("String" r x)
     | <>:r space '[' hostListItem*:xs space ']'    -> Node("Placeholder" r ["List" ~xs])
     | <>:r space '{' (hostExpr:x -> listify(x))*:xs space '}'        -> Node("Placeholder" r ["Format" ~xs])
     | <>:r var:x space '(' (hostExpr:x -> listify(x))*:ys space ')'  -> Node("Placeholder" r ["Call" x ~ys])

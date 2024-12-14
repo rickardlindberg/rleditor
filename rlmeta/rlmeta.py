@@ -1782,12 +1782,9 @@ class Matcher_Parser_327:
 class Matcher_Parser_328:
     def run(self, stream):
         return stream.action(lambda self: self.lookup('Node')(
-            'Placeholder',
+            'String',
             self.lookup('r'),
-            self.lookup('concat')([
-                self.lookup('splice')(0, 'String'),
-                self.lookup('splice')(0, self.lookup('x'))
-            ])
+            self.lookup('x')
         ))
 class Matcher_Parser_329:
     def run(self, stream):
