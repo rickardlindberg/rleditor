@@ -4,9 +4,36 @@ PrettyPrinter {
     File = . prettyInner*:xs -> { xs }
     Namespace = .:name prettyInner*:xs -> { name " {\n" xs "}\n" }
     Rule = .:name prettyInner*:xs -> { "  " name " =\n" xs }
-    Or = . (prettyInner:x -> {"    | " x "\n"})*:xs -> xs
+    Or =
+        | . prettyInner:x [['And'] .] -> { x "?" }
+        | . (prettyInner:x -> {"    | " x "\n"})*:xs -> xs
     Scope = . prettyInner
     And = . prettyInner*:xs -> { join(xs " ") }
+    Bind = .:name prettyInner:x -> { x ":" name }
+    Star = . prettyInner:x -> { x "*" }
+    Paren = . prettyInner:x -> { "(" x ")" }
+    Not = . prettyInner:x -> { "!" x }
+    Action = . prettyInner:x -> { "-> " x }
+    Call = . prettyInner:x prettyInner*:ys -> { x "(" join(ys " ") ")" }
+    Lookup = .
+    String = [doubleStringItem*:xs] -> { "\"" xs "\"" }
+    Eq = [singleStringItem*:xs] -> { "'" xs "'" }
+    List = . prettyInner*:xs -> { "[" join(xs " ") "]" }
+    ListItem = .:spliceCount prettyInner:x -> { mult("~" spliceCount) x }
+    Format = . prettyInner*:xs -> { "{ " join(xs " ") " }" }
+    Range = [.:x .:y] -> { "'" x "'-'" y "'" }
     MatchObject = . prettyInner
+    MatchRange = . prettyInner:x -> { "<" x ">" }
+    MatchRule = .
     Any = . -> "."
+    doubleStringItem =
+        | '"' -> "\\\""
+        | '\n' -> "\\n"
+        | '\\' -> "\\\\"
+        | .
+    singleStringItem =
+        | '\'' -> "\\'"
+        | '\n' -> "\\n"
+        | '\\' -> "\\\\"
+        | .
 }

@@ -176,6 +176,9 @@ class Runtime:
     def concat(self, lists):
         return [x for xs in lists for x in xs]
 
+    def mult(self, x, y):
+        return x * y
+
     def Node(self, name, range_, value, children=[]):
         return Node(name, range_.start, range_.end, value, children)
 
