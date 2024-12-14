@@ -21,12 +21,12 @@ Parser {
     | < space '%' >:r                              -> Node("MatchCallRule" r "")
     | <>:r expr2:x                                 -> x
   expr2 =
-    | <>:r name:x !(space '=')                             -> Node("MatchRule" r x)
-    | <>:r space char:x '-' char:y                         -> Node("Placeholder" r ["MatchObject" ["Range" x y]])
-    | <>:r space '\'' (!'\'' matchChar)*:xs '\''           -> Node("And" r "" xs)
-    | <>:r space '.'                                       -> Node("Placeholder" r ["MatchObject" ["Any"]])
-    | <>:r space '(' choice:x space ')'                    -> Node("Paren" r "" [x])
-    | <>:r space '<' (expr:x -> listify(x))*:xs space '>'  -> Node("Placeholder" r ["MatchRange" ["And" "" ~xs]])
+    | <>:r name:x !(space '=')                     -> Node("MatchRule" r x)
+    | <>:r space char:x '-' char:y                 -> Node("Placeholder" r ["MatchObject" ["Range" x y]])
+    | <>:r space '\'' (!'\'' matchChar)*:xs '\''   -> Node("And" r "" xs)
+    | <>:r space '.'                               -> Node("Placeholder" r ["MatchObject" ["Any"]])
+    | <>:r space '(' choice:x space ')'            -> Node("Paren" r "" [x])
+    | <>:r space '<' expr*:xs space '>'            -> Node("MatchRange" r "" [Node("And" r "" xs)])
   matchChar =
     | <>:r innerChar:x                             -> Node("Placeholder" r ["MatchObject" ["Eq" x]])
   maybeAction =
