@@ -112,6 +112,49 @@ class Editor:
             ]
         }
         >
+
+        >>> editor = Editor.from_text('G { r = .:x }', rlmeta_parse, rlmeta_pretty)
+        >>> editor.select(Range(10))
+        >>> print(editor.text_with_selection_markers, end="")
+        G {
+          r = <>.:x
+        }
+        >>> editor.selection_expand()
+        >>> print(editor.text_with_selection_markers, end="")
+        G {
+          r = <.>:x
+        }
+        >>> editor.selection_expand()
+        >>> print(editor.text_with_selection_markers, end="")
+        G {
+          r = <.:x>
+        }
+        >>> editor.selection_expand()
+        >>> print(editor.text_with_selection_markers, end="")
+        G {
+          r =< .:x>
+        }
+        >>> editor.selection_expand()
+        >>> print(editor.text_with_selection_markers, end="")
+        G {
+          <r = .:x>
+        }
+        >>> editor.selection_expand()
+        >>> print(editor.text_with_selection_markers, end="")
+        <G {
+          r = .:x
+        }>
+        >>> editor.selection_expand()
+        >>> print(editor.text_with_selection_markers, end="")
+        <G {
+          r = .:x
+        }
+        >
+        >>> print(editor.text_with_selection_markers, end="")
+        <G {
+          r = .:x
+        }
+        >
         """
         node = self.get_selected_node()
         if node.range.is_same(self.selection) and node.parent:
@@ -136,7 +179,9 @@ class Editor:
         raise ValueError("Could not find node with selection.")
 
     def get_outermost_node(self, node):
-        if node.parent and node.parent.range.is_same(self.selection):
+        if node.parent and node.parent.range.overlap(self.selection).is_same(
+            node.parent.range
+        ):
             return self.get_outermost_node(node.parent)
         else:
             return node
