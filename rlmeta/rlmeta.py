@@ -1193,15 +1193,19 @@ class Matcher_Parser_200:
 class Matcher_Parser_201:
     def run(self, stream):
         return stream.action(lambda self: self.lookup('Node')(
-            'Placeholder',
+            'MatchObject',
             self.lookup('r'),
+            '',
             self.lookup('concat')([
-                self.lookup('splice')(0, 'MatchObject'),
-                self.lookup('splice')(0, self.lookup('concat')([
-                    self.lookup('splice')(0, 'Range'),
-                    self.lookup('splice')(0, self.lookup('x')),
-                    self.lookup('splice')(0, self.lookup('y'))
-                ]))
+                self.lookup('splice')(0, self.lookup('Node')(
+                    'Placeholder',
+                    self.lookup('r'),
+                    self.lookup('concat')([
+                        self.lookup('splice')(0, 'Range'),
+                        self.lookup('splice')(0, self.lookup('x')),
+                        self.lookup('splice')(0, self.lookup('y'))
+                    ])
+                ))
             ])
         ))
 class Matcher_Parser_202:
@@ -1327,13 +1331,17 @@ class Matcher_Parser_229:
 class Matcher_Parser_230:
     def run(self, stream):
         return stream.action(lambda self: self.lookup('Node')(
-            'Placeholder',
+            'MatchObject',
             self.lookup('r'),
+            '',
             self.lookup('concat')([
-                self.lookup('splice')(0, 'MatchObject'),
-                self.lookup('splice')(0, self.lookup('concat')([
-                    self.lookup('splice')(0, 'Any')
-                ]))
+                self.lookup('splice')(0, self.lookup('Node')(
+                    'Placeholder',
+                    self.lookup('r'),
+                    self.lookup('concat')([
+                        self.lookup('splice')(0, 'Any')
+                    ])
+                ))
             ])
         ))
 class Matcher_Parser_231:
@@ -1511,14 +1519,18 @@ class Matcher_Parser_267:
 class Matcher_Parser_268:
     def run(self, stream):
         return stream.action(lambda self: self.lookup('Node')(
-            'Placeholder',
+            'MatchObject',
             self.lookup('r'),
+            '',
             self.lookup('concat')([
-                self.lookup('splice')(0, 'MatchObject'),
-                self.lookup('splice')(0, self.lookup('concat')([
-                    self.lookup('splice')(0, 'Eq'),
-                    self.lookup('splice')(0, self.lookup('x'))
-                ]))
+                self.lookup('splice')(0, self.lookup('Node')(
+                    'Placeholder',
+                    self.lookup('r'),
+                    self.lookup('concat')([
+                        self.lookup('splice')(0, 'Eq'),
+                        self.lookup('splice')(0, self.lookup('x'))
+                    ])
+                ))
             ])
         ))
 class Matcher_Parser_269:
@@ -2979,178 +2991,182 @@ class Matcher_CodeGenerator_112:
         ])
 class Matcher_CodeGenerator_113:
     def run(self, stream):
-        return rules['CodeGenerator.matcher'].run(stream)
+        return stream.match(lambda item: True, 'any')
 class Matcher_CodeGenerator_114:
     def run(self, stream):
-        return stream.bind('m', Matcher_CodeGenerator_113().run(stream))
+        return rules['CodeGenerator.matcher'].run(stream)
 class Matcher_CodeGenerator_115:
     def run(self, stream):
-        return rules['CodeGenerator.ast'].run(stream)
+        return stream.bind('m', Matcher_CodeGenerator_114().run(stream))
 class Matcher_CodeGenerator_116:
     def run(self, stream):
-        return stream.bind('x', Matcher_CodeGenerator_115().run(stream))
+        return rules['CodeGenerator.ast'].run(stream)
 class Matcher_CodeGenerator_117:
+    def run(self, stream):
+        return stream.bind('x', Matcher_CodeGenerator_116().run(stream))
+class Matcher_CodeGenerator_118:
     def run(self, stream):
         return stream.action(lambda self: self.bind('body', self.lookup('join')([
             'stream.match(lambda item: ',
             self.lookup('x'),
             ')'
         ]), lambda: self.lookup('m')))
-class Matcher_CodeGenerator_118:
-    def run(self, stream):
-        return stream.operator_and([
-            Matcher_CodeGenerator_114(),
-            Matcher_CodeGenerator_116(),
-            Matcher_CodeGenerator_117()
-        ])
 class Matcher_CodeGenerator_119:
     def run(self, stream):
-        return stream.with_scope(Matcher_CodeGenerator_118())
+        return stream.operator_and([
+            Matcher_CodeGenerator_113(),
+            Matcher_CodeGenerator_115(),
+            Matcher_CodeGenerator_117(),
+            Matcher_CodeGenerator_118()
+        ])
 class Matcher_CodeGenerator_120:
     def run(self, stream):
-        return stream.operator_or([
-            Matcher_CodeGenerator_119()
-        ])
+        return stream.with_scope(Matcher_CodeGenerator_119())
 class Matcher_CodeGenerator_121:
     def run(self, stream):
-        return stream.match(lambda item: True, 'any')
+        return stream.operator_or([
+            Matcher_CodeGenerator_120()
+        ])
 class Matcher_CodeGenerator_122:
     def run(self, stream):
-        return rules['CodeGenerator.matcher'].run(stream)
+        return stream.match(lambda item: True, 'any')
 class Matcher_CodeGenerator_123:
     def run(self, stream):
-        return stream.bind('m', Matcher_CodeGenerator_122().run(stream))
+        return rules['CodeGenerator.matcher'].run(stream)
 class Matcher_CodeGenerator_124:
     def run(self, stream):
-        return rules['CodeGenerator.ast'].run(stream)
+        return stream.bind('m', Matcher_CodeGenerator_123().run(stream))
 class Matcher_CodeGenerator_125:
     def run(self, stream):
-        return stream.bind('x', Matcher_CodeGenerator_124().run(stream))
+        return rules['CodeGenerator.ast'].run(stream)
 class Matcher_CodeGenerator_126:
+    def run(self, stream):
+        return stream.bind('x', Matcher_CodeGenerator_125().run(stream))
+class Matcher_CodeGenerator_127:
     def run(self, stream):
         return stream.action(lambda self: self.bind('body', self.lookup('join')([
             'stream.match_list(',
             self.lookup('x'),
             ')'
         ]), lambda: self.lookup('m')))
-class Matcher_CodeGenerator_127:
-    def run(self, stream):
-        return stream.operator_and([
-            Matcher_CodeGenerator_121(),
-            Matcher_CodeGenerator_123(),
-            Matcher_CodeGenerator_125(),
-            Matcher_CodeGenerator_126()
-        ])
 class Matcher_CodeGenerator_128:
     def run(self, stream):
-        return stream.with_scope(Matcher_CodeGenerator_127())
+        return stream.operator_and([
+            Matcher_CodeGenerator_122(),
+            Matcher_CodeGenerator_124(),
+            Matcher_CodeGenerator_126(),
+            Matcher_CodeGenerator_127()
+        ])
 class Matcher_CodeGenerator_129:
     def run(self, stream):
-        return stream.operator_or([
-            Matcher_CodeGenerator_128()
-        ])
+        return stream.with_scope(Matcher_CodeGenerator_128())
 class Matcher_CodeGenerator_130:
     def run(self, stream):
-        return stream.match(lambda item: True, 'any')
+        return stream.operator_or([
+            Matcher_CodeGenerator_129()
+        ])
 class Matcher_CodeGenerator_131:
     def run(self, stream):
-        return rules['CodeGenerator.matcher'].run(stream)
+        return stream.match(lambda item: True, 'any')
 class Matcher_CodeGenerator_132:
     def run(self, stream):
-        return stream.bind('m', Matcher_CodeGenerator_131().run(stream))
+        return rules['CodeGenerator.matcher'].run(stream)
 class Matcher_CodeGenerator_133:
     def run(self, stream):
-        return rules['CodeGenerator.ast'].run(stream)
+        return stream.bind('m', Matcher_CodeGenerator_132().run(stream))
 class Matcher_CodeGenerator_134:
     def run(self, stream):
-        return stream.bind('x', Matcher_CodeGenerator_133().run(stream))
+        return rules['CodeGenerator.ast'].run(stream)
 class Matcher_CodeGenerator_135:
+    def run(self, stream):
+        return stream.bind('x', Matcher_CodeGenerator_134().run(stream))
+class Matcher_CodeGenerator_136:
     def run(self, stream):
         return stream.action(lambda self: self.bind('body', self.lookup('join')([
             'stream.match_range(',
             self.lookup('x'),
             ')'
         ]), lambda: self.lookup('m')))
-class Matcher_CodeGenerator_136:
-    def run(self, stream):
-        return stream.operator_and([
-            Matcher_CodeGenerator_130(),
-            Matcher_CodeGenerator_132(),
-            Matcher_CodeGenerator_134(),
-            Matcher_CodeGenerator_135()
-        ])
 class Matcher_CodeGenerator_137:
     def run(self, stream):
-        return stream.with_scope(Matcher_CodeGenerator_136())
+        return stream.operator_and([
+            Matcher_CodeGenerator_131(),
+            Matcher_CodeGenerator_133(),
+            Matcher_CodeGenerator_135(),
+            Matcher_CodeGenerator_136()
+        ])
 class Matcher_CodeGenerator_138:
     def run(self, stream):
-        return stream.operator_or([
-            Matcher_CodeGenerator_137()
-        ])
+        return stream.with_scope(Matcher_CodeGenerator_137())
 class Matcher_CodeGenerator_139:
     def run(self, stream):
-        return stream.match(lambda item: True, 'any')
+        return stream.operator_or([
+            Matcher_CodeGenerator_138()
+        ])
 class Matcher_CodeGenerator_140:
     def run(self, stream):
-        return rules['CodeGenerator.matcher'].run(stream)
+        return stream.match(lambda item: True, 'any')
 class Matcher_CodeGenerator_141:
     def run(self, stream):
-        return stream.bind('m', Matcher_CodeGenerator_140().run(stream))
+        return rules['CodeGenerator.matcher'].run(stream)
 class Matcher_CodeGenerator_142:
     def run(self, stream):
-        return rules['CodeGenerator.ast'].run(stream)
+        return stream.bind('m', Matcher_CodeGenerator_141().run(stream))
 class Matcher_CodeGenerator_143:
     def run(self, stream):
-        return stream.bind('x', Matcher_CodeGenerator_142().run(stream))
+        return rules['CodeGenerator.ast'].run(stream)
 class Matcher_CodeGenerator_144:
+    def run(self, stream):
+        return stream.bind('x', Matcher_CodeGenerator_143().run(stream))
+class Matcher_CodeGenerator_145:
     def run(self, stream):
         return stream.action(lambda self: self.bind('body', self.lookup('join')([
             'stream.action(lambda self: ',
             self.lookup('x'),
             ')'
         ]), lambda: self.lookup('m')))
-class Matcher_CodeGenerator_145:
-    def run(self, stream):
-        return stream.operator_and([
-            Matcher_CodeGenerator_139(),
-            Matcher_CodeGenerator_141(),
-            Matcher_CodeGenerator_143(),
-            Matcher_CodeGenerator_144()
-        ])
 class Matcher_CodeGenerator_146:
     def run(self, stream):
-        return stream.with_scope(Matcher_CodeGenerator_145())
+        return stream.operator_and([
+            Matcher_CodeGenerator_140(),
+            Matcher_CodeGenerator_142(),
+            Matcher_CodeGenerator_144(),
+            Matcher_CodeGenerator_145()
+        ])
 class Matcher_CodeGenerator_147:
     def run(self, stream):
-        return stream.operator_or([
-            Matcher_CodeGenerator_146()
-        ])
+        return stream.with_scope(Matcher_CodeGenerator_146())
 class Matcher_CodeGenerator_148:
+    def run(self, stream):
+        return stream.operator_or([
+            Matcher_CodeGenerator_147()
+        ])
+class Matcher_CodeGenerator_149:
     def run(self, stream):
         return stream.action(lambda self: self.lookup('join')([
             'True',
             ", 'any'"
         ]))
-class Matcher_CodeGenerator_149:
-    def run(self, stream):
-        return stream.operator_and([
-            Matcher_CodeGenerator_148()
-        ])
 class Matcher_CodeGenerator_150:
     def run(self, stream):
-        return stream.with_scope(Matcher_CodeGenerator_149())
+        return stream.operator_and([
+            Matcher_CodeGenerator_149()
+        ])
 class Matcher_CodeGenerator_151:
     def run(self, stream):
-        return stream.operator_or([
-            Matcher_CodeGenerator_150()
-        ])
+        return stream.with_scope(Matcher_CodeGenerator_150())
 class Matcher_CodeGenerator_152:
     def run(self, stream):
-        return rules['CodeGenerator.repr'].run(stream)
+        return stream.operator_or([
+            Matcher_CodeGenerator_151()
+        ])
 class Matcher_CodeGenerator_153:
     def run(self, stream):
-        return stream.bind('x', Matcher_CodeGenerator_152().run(stream))
+        return rules['CodeGenerator.repr'].run(stream)
 class Matcher_CodeGenerator_154:
+    def run(self, stream):
+        return stream.bind('x', Matcher_CodeGenerator_153().run(stream))
+class Matcher_CodeGenerator_155:
     def run(self, stream):
         return stream.action(lambda self: self.lookup('join')([
             'item == ',
@@ -3160,33 +3176,33 @@ class Matcher_CodeGenerator_154:
                 self.lookup('x')
             )
         ]))
-class Matcher_CodeGenerator_155:
-    def run(self, stream):
-        return stream.operator_and([
-            Matcher_CodeGenerator_153(),
-            Matcher_CodeGenerator_154()
-        ])
 class Matcher_CodeGenerator_156:
     def run(self, stream):
-        return stream.with_scope(Matcher_CodeGenerator_155())
+        return stream.operator_and([
+            Matcher_CodeGenerator_154(),
+            Matcher_CodeGenerator_155()
+        ])
 class Matcher_CodeGenerator_157:
     def run(self, stream):
-        return stream.operator_or([
-            Matcher_CodeGenerator_156()
-        ])
+        return stream.with_scope(Matcher_CodeGenerator_156())
 class Matcher_CodeGenerator_158:
     def run(self, stream):
-        return rules['CodeGenerator.repr'].run(stream)
+        return stream.operator_or([
+            Matcher_CodeGenerator_157()
+        ])
 class Matcher_CodeGenerator_159:
     def run(self, stream):
-        return stream.bind('x', Matcher_CodeGenerator_158().run(stream))
+        return rules['CodeGenerator.repr'].run(stream)
 class Matcher_CodeGenerator_160:
     def run(self, stream):
-        return rules['CodeGenerator.repr'].run(stream)
+        return stream.bind('x', Matcher_CodeGenerator_159().run(stream))
 class Matcher_CodeGenerator_161:
     def run(self, stream):
-        return stream.bind('y', Matcher_CodeGenerator_160().run(stream))
+        return rules['CodeGenerator.repr'].run(stream)
 class Matcher_CodeGenerator_162:
+    def run(self, stream):
+        return stream.bind('y', Matcher_CodeGenerator_161().run(stream))
+class Matcher_CodeGenerator_163:
     def run(self, stream):
         return stream.action(lambda self: self.lookup('join')([
             self.lookup('x'),
@@ -3198,40 +3214,40 @@ class Matcher_CodeGenerator_162:
             self.lookup('y'),
             '"'
         ]))
-class Matcher_CodeGenerator_163:
-    def run(self, stream):
-        return stream.operator_and([
-            Matcher_CodeGenerator_159(),
-            Matcher_CodeGenerator_161(),
-            Matcher_CodeGenerator_162()
-        ])
 class Matcher_CodeGenerator_164:
     def run(self, stream):
-        return stream.with_scope(Matcher_CodeGenerator_163())
+        return stream.operator_and([
+            Matcher_CodeGenerator_160(),
+            Matcher_CodeGenerator_162(),
+            Matcher_CodeGenerator_163()
+        ])
 class Matcher_CodeGenerator_165:
     def run(self, stream):
-        return stream.operator_or([
-            Matcher_CodeGenerator_164()
-        ])
+        return stream.with_scope(Matcher_CodeGenerator_164())
 class Matcher_CodeGenerator_166:
     def run(self, stream):
-        return rules['CodeGenerator.repr'].run(stream)
+        return stream.operator_or([
+            Matcher_CodeGenerator_165()
+        ])
 class Matcher_CodeGenerator_167:
     def run(self, stream):
-        return stream.bind('x', Matcher_CodeGenerator_166().run(stream))
+        return rules['CodeGenerator.repr'].run(stream)
 class Matcher_CodeGenerator_168:
     def run(self, stream):
-        return rules['CodeGenerator.ast'].run(stream)
+        return stream.bind('x', Matcher_CodeGenerator_167().run(stream))
 class Matcher_CodeGenerator_169:
     def run(self, stream):
-        return stream.bind('y', Matcher_CodeGenerator_168().run(stream))
+        return rules['CodeGenerator.ast'].run(stream)
 class Matcher_CodeGenerator_170:
     def run(self, stream):
-        return rules['CodeGenerator.ast'].run(stream)
+        return stream.bind('y', Matcher_CodeGenerator_169().run(stream))
 class Matcher_CodeGenerator_171:
     def run(self, stream):
-        return stream.bind('z', Matcher_CodeGenerator_170().run(stream))
+        return rules['CodeGenerator.ast'].run(stream)
 class Matcher_CodeGenerator_172:
+    def run(self, stream):
+        return stream.bind('z', Matcher_CodeGenerator_171().run(stream))
+class Matcher_CodeGenerator_173:
     def run(self, stream):
         return stream.action(lambda self: self.lookup('join')([
             'self.bind(',
@@ -3242,78 +3258,78 @@ class Matcher_CodeGenerator_172:
             self.lookup('z'),
             ')'
         ]))
-class Matcher_CodeGenerator_173:
-    def run(self, stream):
-        return stream.operator_and([
-            Matcher_CodeGenerator_167(),
-            Matcher_CodeGenerator_169(),
-            Matcher_CodeGenerator_171(),
-            Matcher_CodeGenerator_172()
-        ])
 class Matcher_CodeGenerator_174:
     def run(self, stream):
-        return stream.with_scope(Matcher_CodeGenerator_173())
+        return stream.operator_and([
+            Matcher_CodeGenerator_168(),
+            Matcher_CodeGenerator_170(),
+            Matcher_CodeGenerator_172(),
+            Matcher_CodeGenerator_173()
+        ])
 class Matcher_CodeGenerator_175:
     def run(self, stream):
-        return stream.operator_or([
-            Matcher_CodeGenerator_174()
-        ])
+        return stream.with_scope(Matcher_CodeGenerator_174())
 class Matcher_CodeGenerator_176:
     def run(self, stream):
-        return rules['CodeGenerator.repr'].run(stream)
+        return stream.operator_or([
+            Matcher_CodeGenerator_175()
+        ])
 class Matcher_CodeGenerator_177:
     def run(self, stream):
-        return stream.operator_and([
-            Matcher_CodeGenerator_176()
-        ])
+        return rules['CodeGenerator.repr'].run(stream)
 class Matcher_CodeGenerator_178:
     def run(self, stream):
-        return stream.with_scope(Matcher_CodeGenerator_177())
+        return stream.operator_and([
+            Matcher_CodeGenerator_177()
+        ])
 class Matcher_CodeGenerator_179:
     def run(self, stream):
-        return stream.operator_or([
-            Matcher_CodeGenerator_178()
-        ])
+        return stream.with_scope(Matcher_CodeGenerator_178())
 class Matcher_CodeGenerator_180:
     def run(self, stream):
-        return rules['CodeGenerator.astList'].run(stream)
+        return stream.operator_or([
+            Matcher_CodeGenerator_179()
+        ])
 class Matcher_CodeGenerator_181:
     def run(self, stream):
-        return stream.bind('x', Matcher_CodeGenerator_180().run(stream))
+        return rules['CodeGenerator.astList'].run(stream)
 class Matcher_CodeGenerator_182:
+    def run(self, stream):
+        return stream.bind('x', Matcher_CodeGenerator_181().run(stream))
+class Matcher_CodeGenerator_183:
     def run(self, stream):
         return stream.action(lambda self: self.lookup('join')([
             "self.lookup('concat')([",
             self.lookup('x'),
             '])'
         ]))
-class Matcher_CodeGenerator_183:
-    def run(self, stream):
-        return stream.operator_and([
-            Matcher_CodeGenerator_181(),
-            Matcher_CodeGenerator_182()
-        ])
 class Matcher_CodeGenerator_184:
     def run(self, stream):
-        return stream.with_scope(Matcher_CodeGenerator_183())
+        return stream.operator_and([
+            Matcher_CodeGenerator_182(),
+            Matcher_CodeGenerator_183()
+        ])
 class Matcher_CodeGenerator_185:
     def run(self, stream):
-        return stream.operator_or([
-            Matcher_CodeGenerator_184()
-        ])
+        return stream.with_scope(Matcher_CodeGenerator_184())
 class Matcher_CodeGenerator_186:
     def run(self, stream):
-        return rules['CodeGenerator.repr'].run(stream)
+        return stream.operator_or([
+            Matcher_CodeGenerator_185()
+        ])
 class Matcher_CodeGenerator_187:
     def run(self, stream):
-        return stream.bind('x', Matcher_CodeGenerator_186().run(stream))
+        return rules['CodeGenerator.repr'].run(stream)
 class Matcher_CodeGenerator_188:
     def run(self, stream):
-        return rules['CodeGenerator.ast'].run(stream)
+        return stream.bind('x', Matcher_CodeGenerator_187().run(stream))
 class Matcher_CodeGenerator_189:
     def run(self, stream):
-        return stream.bind('y', Matcher_CodeGenerator_188().run(stream))
+        return rules['CodeGenerator.ast'].run(stream)
 class Matcher_CodeGenerator_190:
+    def run(self, stream):
+        return stream.bind('y', Matcher_CodeGenerator_189().run(stream))
+class Matcher_CodeGenerator_191:
     def run(self, stream):
         return stream.action(lambda self: self.lookup('join')([
             "self.lookup('splice')(",
@@ -3322,61 +3338,61 @@ class Matcher_CodeGenerator_190:
             self.lookup('y'),
             ')'
         ]))
-class Matcher_CodeGenerator_191:
-    def run(self, stream):
-        return stream.operator_and([
-            Matcher_CodeGenerator_187(),
-            Matcher_CodeGenerator_189(),
-            Matcher_CodeGenerator_190()
-        ])
 class Matcher_CodeGenerator_192:
     def run(self, stream):
-        return stream.with_scope(Matcher_CodeGenerator_191())
+        return stream.operator_and([
+            Matcher_CodeGenerator_188(),
+            Matcher_CodeGenerator_190(),
+            Matcher_CodeGenerator_191()
+        ])
 class Matcher_CodeGenerator_193:
     def run(self, stream):
-        return stream.operator_or([
-            Matcher_CodeGenerator_192()
-        ])
+        return stream.with_scope(Matcher_CodeGenerator_192())
 class Matcher_CodeGenerator_194:
     def run(self, stream):
-        return rules['CodeGenerator.astList'].run(stream)
+        return stream.operator_or([
+            Matcher_CodeGenerator_193()
+        ])
 class Matcher_CodeGenerator_195:
     def run(self, stream):
-        return stream.bind('x', Matcher_CodeGenerator_194().run(stream))
+        return rules['CodeGenerator.astList'].run(stream)
 class Matcher_CodeGenerator_196:
+    def run(self, stream):
+        return stream.bind('x', Matcher_CodeGenerator_195().run(stream))
+class Matcher_CodeGenerator_197:
     def run(self, stream):
         return stream.action(lambda self: self.lookup('join')([
             "self.lookup('join')([",
             self.lookup('x'),
             '])'
         ]))
-class Matcher_CodeGenerator_197:
-    def run(self, stream):
-        return stream.operator_and([
-            Matcher_CodeGenerator_195(),
-            Matcher_CodeGenerator_196()
-        ])
 class Matcher_CodeGenerator_198:
     def run(self, stream):
-        return stream.with_scope(Matcher_CodeGenerator_197())
+        return stream.operator_and([
+            Matcher_CodeGenerator_196(),
+            Matcher_CodeGenerator_197()
+        ])
 class Matcher_CodeGenerator_199:
     def run(self, stream):
-        return stream.operator_or([
-            Matcher_CodeGenerator_198()
-        ])
+        return stream.with_scope(Matcher_CodeGenerator_198())
 class Matcher_CodeGenerator_200:
     def run(self, stream):
-        return rules['CodeGenerator.ast'].run(stream)
+        return stream.operator_or([
+            Matcher_CodeGenerator_199()
+        ])
 class Matcher_CodeGenerator_201:
     def run(self, stream):
-        return stream.bind('x', Matcher_CodeGenerator_200().run(stream))
+        return rules['CodeGenerator.ast'].run(stream)
 class Matcher_CodeGenerator_202:
     def run(self, stream):
-        return rules['CodeGenerator.astList'].run(stream)
+        return stream.bind('x', Matcher_CodeGenerator_201().run(stream))
 class Matcher_CodeGenerator_203:
     def run(self, stream):
-        return stream.bind('y', Matcher_CodeGenerator_202().run(stream))
+        return rules['CodeGenerator.astList'].run(stream)
 class Matcher_CodeGenerator_204:
+    def run(self, stream):
+        return stream.bind('y', Matcher_CodeGenerator_203().run(stream))
+class Matcher_CodeGenerator_205:
     def run(self, stream):
         return stream.action(lambda self: self.lookup('join')([
             self.lookup('x'),
@@ -3384,94 +3400,94 @@ class Matcher_CodeGenerator_204:
             self.lookup('y'),
             ')'
         ]))
-class Matcher_CodeGenerator_205:
-    def run(self, stream):
-        return stream.operator_and([
-            Matcher_CodeGenerator_201(),
-            Matcher_CodeGenerator_203(),
-            Matcher_CodeGenerator_204()
-        ])
 class Matcher_CodeGenerator_206:
     def run(self, stream):
-        return stream.with_scope(Matcher_CodeGenerator_205())
+        return stream.operator_and([
+            Matcher_CodeGenerator_202(),
+            Matcher_CodeGenerator_204(),
+            Matcher_CodeGenerator_205()
+        ])
 class Matcher_CodeGenerator_207:
     def run(self, stream):
-        return stream.operator_or([
-            Matcher_CodeGenerator_206()
-        ])
+        return stream.with_scope(Matcher_CodeGenerator_206())
 class Matcher_CodeGenerator_208:
     def run(self, stream):
-        return rules['CodeGenerator.repr'].run(stream)
+        return stream.operator_or([
+            Matcher_CodeGenerator_207()
+        ])
 class Matcher_CodeGenerator_209:
     def run(self, stream):
-        return stream.bind('x', Matcher_CodeGenerator_208().run(stream))
+        return rules['CodeGenerator.repr'].run(stream)
 class Matcher_CodeGenerator_210:
+    def run(self, stream):
+        return stream.bind('x', Matcher_CodeGenerator_209().run(stream))
+class Matcher_CodeGenerator_211:
     def run(self, stream):
         return stream.action(lambda self: self.lookup('join')([
             'self.lookup(',
             self.lookup('x'),
             ')'
         ]))
-class Matcher_CodeGenerator_211:
-    def run(self, stream):
-        return stream.operator_and([
-            Matcher_CodeGenerator_209(),
-            Matcher_CodeGenerator_210()
-        ])
 class Matcher_CodeGenerator_212:
     def run(self, stream):
-        return stream.with_scope(Matcher_CodeGenerator_211())
+        return stream.operator_and([
+            Matcher_CodeGenerator_210(),
+            Matcher_CodeGenerator_211()
+        ])
 class Matcher_CodeGenerator_213:
     def run(self, stream):
-        return stream.operator_or([
-            Matcher_CodeGenerator_212()
-        ])
+        return stream.with_scope(Matcher_CodeGenerator_212())
 class Matcher_CodeGenerator_214:
     def run(self, stream):
-        return stream.match(lambda item: True, 'any')
+        return stream.operator_or([
+            Matcher_CodeGenerator_213()
+        ])
 class Matcher_CodeGenerator_215:
     def run(self, stream):
-        return rules['CodeGenerator.ast'].run(stream)
+        return stream.match(lambda item: True, 'any')
 class Matcher_CodeGenerator_216:
     def run(self, stream):
-        return stream.operator_and([
-            Matcher_CodeGenerator_214(),
-            Matcher_CodeGenerator_215()
-        ])
+        return rules['CodeGenerator.ast'].run(stream)
 class Matcher_CodeGenerator_217:
     def run(self, stream):
-        return stream.with_scope(Matcher_CodeGenerator_216())
+        return stream.operator_and([
+            Matcher_CodeGenerator_215(),
+            Matcher_CodeGenerator_216()
+        ])
 class Matcher_CodeGenerator_218:
     def run(self, stream):
-        return stream.operator_or([
-            Matcher_CodeGenerator_217()
-        ])
+        return stream.with_scope(Matcher_CodeGenerator_217())
 class Matcher_CodeGenerator_219:
     def run(self, stream):
-        return rules['CodeGenerator.ast'].run(stream)
+        return stream.operator_or([
+            Matcher_CodeGenerator_218()
+        ])
 class Matcher_CodeGenerator_220:
     def run(self, stream):
-        return stream.operator_and([
-            Matcher_CodeGenerator_219()
-        ])
+        return rules['CodeGenerator.ast'].run(stream)
 class Matcher_CodeGenerator_221:
     def run(self, stream):
-        return stream.with_scope(Matcher_CodeGenerator_220())
+        return stream.operator_and([
+            Matcher_CodeGenerator_220()
+        ])
 class Matcher_CodeGenerator_222:
     def run(self, stream):
-        return stream.operator_or([
-            Matcher_CodeGenerator_221()
-        ])
+        return stream.with_scope(Matcher_CodeGenerator_221())
 class Matcher_CodeGenerator_223:
     def run(self, stream):
-        return rules['CodeGenerator.ast'].run(stream)
+        return stream.operator_or([
+            Matcher_CodeGenerator_222()
+        ])
 class Matcher_CodeGenerator_224:
     def run(self, stream):
-        return stream.operator_star(Matcher_CodeGenerator_223())
+        return rules['CodeGenerator.ast'].run(stream)
 class Matcher_CodeGenerator_225:
     def run(self, stream):
-        return stream.bind('xs', Matcher_CodeGenerator_224().run(stream))
+        return stream.operator_star(Matcher_CodeGenerator_224())
 class Matcher_CodeGenerator_226:
+    def run(self, stream):
+        return stream.bind('xs', Matcher_CodeGenerator_225().run(stream))
+class Matcher_CodeGenerator_227:
     def run(self, stream):
         return stream.action(lambda self: self.lookup('join')([
             '\n',
@@ -3483,21 +3499,21 @@ class Matcher_CodeGenerator_226:
             ),
             '\n'
         ]))
-class Matcher_CodeGenerator_227:
-    def run(self, stream):
-        return stream.operator_and([
-            Matcher_CodeGenerator_225(),
-            Matcher_CodeGenerator_226()
-        ])
 class Matcher_CodeGenerator_228:
     def run(self, stream):
-        return stream.with_scope(Matcher_CodeGenerator_227())
+        return stream.operator_and([
+            Matcher_CodeGenerator_226(),
+            Matcher_CodeGenerator_227()
+        ])
 class Matcher_CodeGenerator_229:
     def run(self, stream):
-        return stream.operator_or([
-            Matcher_CodeGenerator_228()
-        ])
+        return stream.with_scope(Matcher_CodeGenerator_228())
 class Matcher_CodeGenerator_230:
+    def run(self, stream):
+        return stream.operator_or([
+            Matcher_CodeGenerator_229()
+        ])
+class Matcher_CodeGenerator_231:
     def run(self, stream):
         return stream.action(lambda self: self.bind('id', self.lookup('join')([
             'Matcher_',
@@ -3532,43 +3548,43 @@ class Matcher_CodeGenerator_230:
             self.lookup('id'),
             '()'
         ])))))
-class Matcher_CodeGenerator_231:
-    def run(self, stream):
-        return stream.operator_and([
-            Matcher_CodeGenerator_230()
-        ])
 class Matcher_CodeGenerator_232:
     def run(self, stream):
-        return stream.with_scope(Matcher_CodeGenerator_231())
+        return stream.operator_and([
+            Matcher_CodeGenerator_231()
+        ])
 class Matcher_CodeGenerator_233:
     def run(self, stream):
-        return stream.operator_or([
-            Matcher_CodeGenerator_232()
-        ])
+        return stream.with_scope(Matcher_CodeGenerator_232())
 class Matcher_CodeGenerator_234:
     def run(self, stream):
-        return stream.match(lambda item: True, 'any')
+        return stream.operator_or([
+            Matcher_CodeGenerator_233()
+        ])
 class Matcher_CodeGenerator_235:
     def run(self, stream):
-        return stream.bind('x', Matcher_CodeGenerator_234().run(stream))
+        return stream.match(lambda item: True, 'any')
 class Matcher_CodeGenerator_236:
+    def run(self, stream):
+        return stream.bind('x', Matcher_CodeGenerator_235().run(stream))
+class Matcher_CodeGenerator_237:
     def run(self, stream):
         return stream.action(lambda self: self.lookup('repr')(
             self.lookup('x')
         ))
-class Matcher_CodeGenerator_237:
-    def run(self, stream):
-        return stream.operator_and([
-            Matcher_CodeGenerator_235(),
-            Matcher_CodeGenerator_236()
-        ])
 class Matcher_CodeGenerator_238:
     def run(self, stream):
-        return stream.with_scope(Matcher_CodeGenerator_237())
+        return stream.operator_and([
+            Matcher_CodeGenerator_236(),
+            Matcher_CodeGenerator_237()
+        ])
 class Matcher_CodeGenerator_239:
     def run(self, stream):
+        return stream.with_scope(Matcher_CodeGenerator_238())
+class Matcher_CodeGenerator_240:
+    def run(self, stream):
         return stream.operator_or([
-            Matcher_CodeGenerator_238()
+            Matcher_CodeGenerator_239()
         ])
 rules['CodeGenerator.astInner'] = Matcher_CodeGenerator_7()
 rules['CodeGenerator.ast'] = Matcher_CodeGenerator_15()
@@ -3583,25 +3599,25 @@ rules['CodeGenerator.Star'] = Matcher_CodeGenerator_88()
 rules['CodeGenerator.Not'] = Matcher_CodeGenerator_97()
 rules['CodeGenerator.MatchCallRule'] = Matcher_CodeGenerator_104()
 rules['CodeGenerator.MatchRule'] = Matcher_CodeGenerator_112()
-rules['CodeGenerator.MatchObject'] = Matcher_CodeGenerator_120()
-rules['CodeGenerator.MatchList'] = Matcher_CodeGenerator_129()
-rules['CodeGenerator.MatchRange'] = Matcher_CodeGenerator_138()
-rules['CodeGenerator.Action'] = Matcher_CodeGenerator_147()
-rules['CodeGenerator.Any'] = Matcher_CodeGenerator_151()
-rules['CodeGenerator.Eq'] = Matcher_CodeGenerator_157()
-rules['CodeGenerator.Range'] = Matcher_CodeGenerator_165()
-rules['CodeGenerator.Set'] = Matcher_CodeGenerator_175()
-rules['CodeGenerator.String'] = Matcher_CodeGenerator_179()
-rules['CodeGenerator.List'] = Matcher_CodeGenerator_185()
-rules['CodeGenerator.ListItem'] = Matcher_CodeGenerator_193()
-rules['CodeGenerator.Format'] = Matcher_CodeGenerator_199()
-rules['CodeGenerator.Call'] = Matcher_CodeGenerator_207()
-rules['CodeGenerator.Lookup'] = Matcher_CodeGenerator_213()
-rules['CodeGenerator.Paren'] = Matcher_CodeGenerator_218()
-rules['CodeGenerator.Placeholder'] = Matcher_CodeGenerator_222()
-rules['CodeGenerator.astList'] = Matcher_CodeGenerator_229()
-rules['CodeGenerator.matcher'] = Matcher_CodeGenerator_233()
-rules['CodeGenerator.repr'] = Matcher_CodeGenerator_239()
+rules['CodeGenerator.MatchObject'] = Matcher_CodeGenerator_121()
+rules['CodeGenerator.MatchList'] = Matcher_CodeGenerator_130()
+rules['CodeGenerator.MatchRange'] = Matcher_CodeGenerator_139()
+rules['CodeGenerator.Action'] = Matcher_CodeGenerator_148()
+rules['CodeGenerator.Any'] = Matcher_CodeGenerator_152()
+rules['CodeGenerator.Eq'] = Matcher_CodeGenerator_158()
+rules['CodeGenerator.Range'] = Matcher_CodeGenerator_166()
+rules['CodeGenerator.Set'] = Matcher_CodeGenerator_176()
+rules['CodeGenerator.String'] = Matcher_CodeGenerator_180()
+rules['CodeGenerator.List'] = Matcher_CodeGenerator_186()
+rules['CodeGenerator.ListItem'] = Matcher_CodeGenerator_194()
+rules['CodeGenerator.Format'] = Matcher_CodeGenerator_200()
+rules['CodeGenerator.Call'] = Matcher_CodeGenerator_208()
+rules['CodeGenerator.Lookup'] = Matcher_CodeGenerator_214()
+rules['CodeGenerator.Paren'] = Matcher_CodeGenerator_219()
+rules['CodeGenerator.Placeholder'] = Matcher_CodeGenerator_223()
+rules['CodeGenerator.astList'] = Matcher_CodeGenerator_230()
+rules['CodeGenerator.matcher'] = Matcher_CodeGenerator_234()
+rules['CodeGenerator.repr'] = Matcher_CodeGenerator_240()
 if __name__ == "__main__":
     import sys
 
