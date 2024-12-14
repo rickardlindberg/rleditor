@@ -13,7 +13,7 @@ CodeGenerator {
   Bind          = matcher:m repr:x ast:y -> { "stream.bind(" x ", " y ".run(stream))"    }:body -> m
   Star          = matcher:m ast:x        -> { "stream.operator_star(" x ")"              }:body -> m
   Not           = matcher:m ast:x        -> { "stream.operator_not(" x ")"               }:body -> m
-  MatchCallRule = matcher:m              -> { "stream.match_call_rule('" namespace "')"  }:body -> m
+  MatchCallRule = . matcher:m              -> { "stream.match_call_rule('" namespace "')"  }:body -> m
   MatchRule     = matcher:m .:x          -> { "rules['" namespace "." x "'].run(stream)" }:body -> m
   MatchObject   = matcher:m ast:x        -> { "stream.match(lambda item: " x ")"         }:body -> m
   MatchList     = . matcher:m ast:x        -> { "stream.match_list(" x ")"                 }:body -> m

@@ -18,7 +18,7 @@ Parser {
     | <>:r expr2:x space '*'                       -> Node("Placeholder" r ["Star" x])
     | <>:r expr2:x space '?'                       -> Node("Placeholder" r ["Or" "" x ["And" ""]])
     | <>:r space '!' expr2:x                       -> Node("Placeholder" r ["Not" x])
-    | <>:r space '%'                               -> Node("Placeholder" r ["MatchCallRule"])
+    | < space '%' >:r                              -> Node("MatchCallRule" r "")
     | <>:r expr2:x                                 -> Node("Placeholder" r x)
   expr2 =
     | name:x !(space '=')                     -> ["MatchRule" x]
