@@ -15,7 +15,7 @@ Parser {
     | space < '[' < expr*:xs >:r2 space ']' >:r1      -> Node("MatchList" r1 "" [Node("And" r2 "" xs)])
     | <>:r expr1
   expr1 =
-    | <>:r expr2:x space '*'                       -> Node("Placeholder" r ["Star" listify(x)])
+    | <>:r expr2:x space '*'                       -> Node("Star" r "" [x])
     | <>:r expr2:x space '?'                       -> Node("Placeholder" r ["Or" "" listify(x) ["And" ""]])
     | <>:r space '!' expr2:x                       -> Node("Placeholder" r ["Not" listify(x)])
     | < space '%' >:r                              -> Node("MatchCallRule" r "")
