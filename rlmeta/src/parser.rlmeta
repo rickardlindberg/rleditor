@@ -11,7 +11,7 @@ Parser {
   sequence =
     | < expr*:xs maybeAction:ys >:r                 -> Node("Scope" r "" [Node("And" r "" [~xs ~ys])])
   expr =
-    | <>:r expr1:x space ':' name:y           -> Node("Placeholder" r ["Bind" y listify(x)])
+    | < expr1:x space ':' name:y >:r          -> Node("Bind" r y [x])
     | <>:r space '[' (expr:x -> listify(x))*:xs space ']'       -> Node("Placeholder" r ["MatchList" ["And" "" ~xs]])
     | <>:r expr1
   expr1 =

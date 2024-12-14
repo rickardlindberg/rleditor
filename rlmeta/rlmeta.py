@@ -690,58 +690,54 @@ class Matcher_Parser_86:
         ])
 class Matcher_Parser_87:
     def run(self, stream):
-        return stream.operator_and([
-        
-        ])
+        return rules['Parser.expr1'].run(stream)
 class Matcher_Parser_88:
     def run(self, stream):
-        return stream.match_range(Matcher_Parser_87())
+        return stream.bind('x', Matcher_Parser_87().run(stream))
 class Matcher_Parser_89:
     def run(self, stream):
-        return stream.bind('r', Matcher_Parser_88().run(stream))
+        return rules['Parser.space'].run(stream)
 class Matcher_Parser_90:
     def run(self, stream):
-        return rules['Parser.expr1'].run(stream)
+        return stream.match(lambda item: item == ':', "':'")
 class Matcher_Parser_91:
     def run(self, stream):
-        return stream.bind('x', Matcher_Parser_90().run(stream))
+        return stream.operator_and([
+            Matcher_Parser_90()
+        ])
 class Matcher_Parser_92:
     def run(self, stream):
-        return rules['Parser.space'].run(stream)
+        return rules['Parser.name'].run(stream)
 class Matcher_Parser_93:
     def run(self, stream):
-        return stream.match(lambda item: item == ':', "':'")
+        return stream.bind('y', Matcher_Parser_92().run(stream))
 class Matcher_Parser_94:
     def run(self, stream):
         return stream.operator_and([
+            Matcher_Parser_88(),
+            Matcher_Parser_89(),
+            Matcher_Parser_91(),
             Matcher_Parser_93()
         ])
 class Matcher_Parser_95:
     def run(self, stream):
-        return rules['Parser.name'].run(stream)
+        return stream.match_range(Matcher_Parser_94())
 class Matcher_Parser_96:
     def run(self, stream):
-        return stream.bind('y', Matcher_Parser_95().run(stream))
+        return stream.bind('r', Matcher_Parser_95().run(stream))
 class Matcher_Parser_97:
     def run(self, stream):
         return stream.action(lambda self: self.lookup('Node')(
-            'Placeholder',
+            'Bind',
             self.lookup('r'),
+            self.lookup('y'),
             self.lookup('concat')([
-                self.lookup('splice')(0, 'Bind'),
-                self.lookup('splice')(0, self.lookup('y')),
-                self.lookup('splice')(0, self.lookup('listify')(
-                    self.lookup('x')
-                ))
+                self.lookup('splice')(0, self.lookup('x'))
             ])
         ))
 class Matcher_Parser_98:
     def run(self, stream):
         return stream.operator_and([
-            Matcher_Parser_89(),
-            Matcher_Parser_91(),
-            Matcher_Parser_92(),
-            Matcher_Parser_94(),
             Matcher_Parser_96(),
             Matcher_Parser_97()
         ])
