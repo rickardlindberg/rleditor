@@ -21,7 +21,7 @@ CodeGenerator {
   Action        = . matcher:m ast:x        -> { "stream.action(lambda self: " x ")"        }:body -> m
   Any           =                        -> { "True"             ", 'any'"               }
   Eq            = repr:x                 -> { "item == " x       ", " repr(x)            }
-  Range         = repr:x repr:y          -> { x " <= item <= " y ", \"" x "-" y "\""     }
+  Range         = [repr:x repr:y]          -> { x " <= item <= " y ", \"" x "-" y "\""     }
   Set           = repr:x ast:y ast:z     -> { "self.bind(" x ", " y ", lambda: " z ")"   }
   String        = repr
   List          = astList:x              -> { "self.lookup('concat')([" x "])"           }
