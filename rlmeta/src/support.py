@@ -179,9 +179,6 @@ class Runtime:
     def Node(self, name, range_, value, children=[]):
         return Node(name, range_.start, range_.end, value, children)
 
-    def listify(self, node):
-        return node.as_list()
-
 
 class Node:
 
