@@ -12,7 +12,7 @@ Parser {
     | < expr*:xs maybeAction:ys >:r                 -> Node("Scope" r "" [Node("And" r "" [~xs ~ys])])
   expr =
     | < expr1:x space ':' name:y >:r          -> Node("Bind" r y [x])
-    | <>:r space '[' (expr:x -> listify(x))*:xs space ']'       -> Node("Placeholder" r ["MatchList" ["And" "" ~xs]])
+    | space < '[' < expr*:xs >:r2 space ']' >:r1      -> Node("MatchList" r1 "" [Node("And" r2 "" xs)])
     | <>:r expr1
   expr1 =
     | <>:r expr2:x space '*'                       -> Node("Placeholder" r ["Star" x])

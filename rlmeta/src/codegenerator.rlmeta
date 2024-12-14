@@ -16,7 +16,7 @@ CodeGenerator {
   MatchCallRule = matcher:m              -> { "stream.match_call_rule('" namespace "')"  }:body -> m
   MatchRule     = matcher:m .:x          -> { "rules['" namespace "." x "'].run(stream)" }:body -> m
   MatchObject   = matcher:m ast:x        -> { "stream.match(lambda item: " x ")"         }:body -> m
-  MatchList     = matcher:m ast:x        -> { "stream.match_list(" x ")"                 }:body -> m
+  MatchList     = . matcher:m ast:x        -> { "stream.match_list(" x ")"                 }:body -> m
   MatchRange    = matcher:m ast:x        -> { "stream.match_range(" x ")"                }:body -> m
   Action        = matcher:m ast:x        -> { "stream.action(lambda self: " x ")"        }:body -> m
   Any           =                        -> { "True"             ", 'any'"               }
