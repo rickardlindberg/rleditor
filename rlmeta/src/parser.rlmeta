@@ -9,24 +9,24 @@ Parser {
     | < (space '|')?
       sequence:x (space '|' sequence)*:xs >:r    -> Node("Or" r "" [x ~xs])
   sequence =
-    | < expr*:xs maybeAction:ys >:r                 -> Node("Scope" r [["And" ~xs ~ys]])
+    | < expr*:xs maybeAction:ys >:r                 -> Node("Scope" r "" [Node("And" r [~xs ~ys])])
   expr =
     | expr1:x space ':' name:y                -> ["Bind" y x]
-    | space '[' expr*:xs space ']'            -> ["MatchList" ["And" ~xs]]
+    | space '[' expr*:xs space ']'            -> ["MatchList" ["And" xs]]
     | expr1
   expr1 =
     | expr2:x space '*'                       -> ["Star" x]
-    | expr2:x space '?'                       -> ["Or" "" x ["And"]]
+    | expr2:x space '?'                       -> ["Or" "" x ["And" []]]
     | space '!' expr2:x                       -> ["Not" x]
     | space '%'                               -> ["MatchCallRule"]
     | expr2
   expr2 =
     | name:x !(space '=')                     -> ["MatchRule" x]
     | space char:x '-' char:y                 -> ["MatchObject" ["Range" x y]]
-    | space '\'' (!'\'' matchChar)*:xs '\''   -> ["And" ~xs]
+    | space '\'' (!'\'' matchChar)*:xs '\''   -> ["And" xs]
     | space '.'                               -> ["MatchObject" ["Any"]]
     | space '(' choice:x space ')'            -> listify(x)
-    | space '<' expr*:xs space '>'            -> ["MatchRange" ["And" ~xs]]
+    | space '<' expr*:xs space '>'            -> ["MatchRange" ["And" xs]]
   matchChar =
     | innerChar:x                             -> ["MatchObject" ["Eq" x]]
   maybeAction =
