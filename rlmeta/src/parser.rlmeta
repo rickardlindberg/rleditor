@@ -28,7 +28,7 @@ Parser {
     | <>:r space '(' choice:x space ')'            -> Node("Paren" r "" [x])
     | <>:r space '<' expr*:xs space '>'            -> Node("MatchRange" r "" [Node("And" r "" xs)])
   matchChar =
-    | <>:r innerChar:x                             -> Node("MatchObject" r "" [Node("Placeholder" r ["Eq" x])])
+    | <>:r innerChar:x                             -> Node("MatchObject" r "" [Node("Eq" r x)])
   maybeAction =
     | < actionExpr:x >:r                      -> [Node("Action" r "" [x])]
     |                                         -> []

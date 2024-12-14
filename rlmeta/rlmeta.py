@@ -1521,12 +1521,9 @@ class Matcher_Parser_268:
             '',
             self.lookup('concat')([
                 self.lookup('splice')(0, self.lookup('Node')(
-                    'Placeholder',
+                    'Eq',
                     self.lookup('r'),
-                    self.lookup('concat')([
-                        self.lookup('splice')(0, 'Eq'),
-                        self.lookup('splice')(0, self.lookup('x'))
-                    ])
+                    self.lookup('x')
                 ))
             ])
         ))
