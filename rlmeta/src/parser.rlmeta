@@ -34,16 +34,16 @@ Parser {
     |                                         -> []
   actionExpr =
     | <>:r space '->' hostExpr:x
-      (space ':' name | -> ""):y actionExpr:z -> Node("Placeholder" r ["Set" y x listify(z)])
-    | <>:r space '->' hostExpr:x              -> Node("Placeholder" r x)
+      (space ':' name | -> ""):y actionExpr:z -> Node("Set" r y [x z])
+    | <>:r space '->' hostExpr:x              -> x
   hostExpr =
-    | space string:x                          -> ["String" x]
-    | space '[' hostListItem*:xs space ']'    -> ["List" ~xs]
-    | space '{' hostExpr*:xs space '}'        -> ["Format" ~xs]
-    | var:x space '(' hostExpr*:ys space ')'  -> ["Call" x ~ys]
-    | var
+    | <>:r space string:x                          -> Node("Placeholder" r ["String" x])
+    | <>:r space '[' hostListItem*:xs space ']'    -> Node("Placeholder" r ["List" ~xs])
+    | <>:r space '{' (hostExpr:x -> listify(x))*:xs space '}'        -> Node("Placeholder" r ["Format" ~xs])
+    | <>:r var:x space '(' (hostExpr:x -> listify(x))*:ys space ')'  -> Node("Placeholder" r ["Call" x ~ys])
+    | <>:r var:x                                   -> Node("Placeholder" r x)
   hostListItem =
-    | space '~'*:ys hostExpr:x                -> ["ListItem" len(ys) x]
+    | space '~'*:ys hostExpr:x                -> ["ListItem" len(ys) listify(x)]
   var =
     | name:x !(space '=')                     -> ["Lookup" x]
   string    = '"'  (!'"'  innerChar)*:xs '"'  -> { xs }

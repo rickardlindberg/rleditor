@@ -1684,15 +1684,12 @@ class Matcher_Parser_305:
 class Matcher_Parser_306:
     def run(self, stream):
         return stream.action(lambda self: self.lookup('Node')(
-            'Placeholder',
+            'Set',
             self.lookup('r'),
+            self.lookup('y'),
             self.lookup('concat')([
-                self.lookup('splice')(0, 'Set'),
-                self.lookup('splice')(0, self.lookup('y')),
                 self.lookup('splice')(0, self.lookup('x')),
-                self.lookup('splice')(0, self.lookup('listify')(
-                    self.lookup('z')
-                ))
+                self.lookup('splice')(0, self.lookup('z'))
             ])
         ))
 class Matcher_Parser_307:
@@ -1743,11 +1740,7 @@ class Matcher_Parser_317:
         return stream.bind('x', Matcher_Parser_316().run(stream))
 class Matcher_Parser_318:
     def run(self, stream):
-        return stream.action(lambda self: self.lookup('Node')(
-            'Placeholder',
-            self.lookup('r'),
-            self.lookup('x')
-        ))
+        return stream.action(lambda self: self.lookup('x'))
 class Matcher_Parser_319:
     def run(self, stream):
         return stream.operator_and([
@@ -1768,55 +1761,62 @@ class Matcher_Parser_321:
         ])
 class Matcher_Parser_322:
     def run(self, stream):
-        return rules['Parser.space'].run(stream)
+        return stream.operator_and([
+        
+        ])
 class Matcher_Parser_323:
     def run(self, stream):
-        return rules['Parser.string'].run(stream)
+        return stream.match_range(Matcher_Parser_322())
 class Matcher_Parser_324:
     def run(self, stream):
-        return stream.bind('x', Matcher_Parser_323().run(stream))
+        return stream.bind('r', Matcher_Parser_323().run(stream))
 class Matcher_Parser_325:
     def run(self, stream):
-        return stream.action(lambda self: self.lookup('concat')([
-            self.lookup('splice')(0, 'String'),
-            self.lookup('splice')(0, self.lookup('x'))
-        ]))
+        return rules['Parser.space'].run(stream)
 class Matcher_Parser_326:
     def run(self, stream):
-        return stream.operator_and([
-            Matcher_Parser_322(),
-            Matcher_Parser_324(),
-            Matcher_Parser_325()
-        ])
+        return rules['Parser.string'].run(stream)
 class Matcher_Parser_327:
     def run(self, stream):
-        return stream.with_scope(Matcher_Parser_326())
+        return stream.bind('x', Matcher_Parser_326().run(stream))
 class Matcher_Parser_328:
     def run(self, stream):
-        return rules['Parser.space'].run(stream)
+        return stream.action(lambda self: self.lookup('Node')(
+            'Placeholder',
+            self.lookup('r'),
+            self.lookup('concat')([
+                self.lookup('splice')(0, 'String'),
+                self.lookup('splice')(0, self.lookup('x'))
+            ])
+        ))
 class Matcher_Parser_329:
     def run(self, stream):
-        return stream.match(lambda item: item == '[', "'['")
+        return stream.operator_and([
+            Matcher_Parser_324(),
+            Matcher_Parser_325(),
+            Matcher_Parser_327(),
+            Matcher_Parser_328()
+        ])
 class Matcher_Parser_330:
     def run(self, stream):
-        return stream.operator_and([
-            Matcher_Parser_329()
-        ])
+        return stream.with_scope(Matcher_Parser_329())
 class Matcher_Parser_331:
     def run(self, stream):
-        return rules['Parser.hostListItem'].run(stream)
+        return stream.operator_and([
+        
+        ])
 class Matcher_Parser_332:
     def run(self, stream):
-        return stream.operator_star(Matcher_Parser_331())
+        return stream.match_range(Matcher_Parser_331())
 class Matcher_Parser_333:
     def run(self, stream):
-        return stream.bind('xs', Matcher_Parser_332().run(stream))
+        return stream.bind('r', Matcher_Parser_332().run(stream))
 class Matcher_Parser_334:
     def run(self, stream):
         return rules['Parser.space'].run(stream)
 class Matcher_Parser_335:
     def run(self, stream):
-        return stream.match(lambda item: item == ']', "']'")
+        return stream.match(lambda item: item == '[', "'['")
 class Matcher_Parser_336:
     def run(self, stream):
         return stream.operator_and([
@@ -1824,29 +1824,19 @@ class Matcher_Parser_336:
         ])
 class Matcher_Parser_337:
     def run(self, stream):
-        return stream.action(lambda self: self.lookup('concat')([
-            self.lookup('splice')(0, 'List'),
-            self.lookup('splice')(1, self.lookup('xs'))
-        ]))
+        return rules['Parser.hostListItem'].run(stream)
 class Matcher_Parser_338:
     def run(self, stream):
-        return stream.operator_and([
-            Matcher_Parser_328(),
-            Matcher_Parser_330(),
-            Matcher_Parser_333(),
-            Matcher_Parser_334(),
-            Matcher_Parser_336(),
-            Matcher_Parser_337()
-        ])
+        return stream.operator_star(Matcher_Parser_337())
 class Matcher_Parser_339:
     def run(self, stream):
-        return stream.with_scope(Matcher_Parser_338())
+        return stream.bind('xs', Matcher_Parser_338().run(stream))
 class Matcher_Parser_340:
     def run(self, stream):
         return rules['Parser.space'].run(stream)
 class Matcher_Parser_341:
     def run(self, stream):
-        return stream.match(lambda item: item == '{', "'{'")
+        return stream.match(lambda item: item == ']', "']'")
 class Matcher_Parser_342:
     def run(self, stream):
         return stream.operator_and([
@@ -1854,75 +1844,87 @@ class Matcher_Parser_342:
         ])
 class Matcher_Parser_343:
     def run(self, stream):
-        return rules['Parser.hostExpr'].run(stream)
+        return stream.action(lambda self: self.lookup('Node')(
+            'Placeholder',
+            self.lookup('r'),
+            self.lookup('concat')([
+                self.lookup('splice')(0, 'List'),
+                self.lookup('splice')(1, self.lookup('xs'))
+            ])
+        ))
 class Matcher_Parser_344:
     def run(self, stream):
-        return stream.operator_star(Matcher_Parser_343())
-class Matcher_Parser_345:
-    def run(self, stream):
-        return stream.bind('xs', Matcher_Parser_344().run(stream))
-class Matcher_Parser_346:
-    def run(self, stream):
-        return rules['Parser.space'].run(stream)
-class Matcher_Parser_347:
-    def run(self, stream):
-        return stream.match(lambda item: item == '}', "'}'")
-class Matcher_Parser_348:
-    def run(self, stream):
         return stream.operator_and([
-            Matcher_Parser_347()
-        ])
-class Matcher_Parser_349:
-    def run(self, stream):
-        return stream.action(lambda self: self.lookup('concat')([
-            self.lookup('splice')(0, 'Format'),
-            self.lookup('splice')(1, self.lookup('xs'))
-        ]))
-class Matcher_Parser_350:
-    def run(self, stream):
-        return stream.operator_and([
+            Matcher_Parser_333(),
+            Matcher_Parser_334(),
+            Matcher_Parser_336(),
+            Matcher_Parser_339(),
             Matcher_Parser_340(),
             Matcher_Parser_342(),
-            Matcher_Parser_345(),
-            Matcher_Parser_346(),
-            Matcher_Parser_348(),
-            Matcher_Parser_349()
+            Matcher_Parser_343()
         ])
+class Matcher_Parser_345:
+    def run(self, stream):
+        return stream.with_scope(Matcher_Parser_344())
+class Matcher_Parser_346:
+    def run(self, stream):
+        return stream.operator_and([
+        
+        ])
+class Matcher_Parser_347:
+    def run(self, stream):
+        return stream.match_range(Matcher_Parser_346())
+class Matcher_Parser_348:
+    def run(self, stream):
+        return stream.bind('r', Matcher_Parser_347().run(stream))
+class Matcher_Parser_349:
+    def run(self, stream):
+        return rules['Parser.space'].run(stream)
+class Matcher_Parser_350:
+    def run(self, stream):
+        return stream.match(lambda item: item == '{', "'{'")
 class Matcher_Parser_351:
     def run(self, stream):
-        return stream.with_scope(Matcher_Parser_350())
+        return stream.operator_and([
+            Matcher_Parser_350()
+        ])
 class Matcher_Parser_352:
     def run(self, stream):
-        return rules['Parser.var'].run(stream)
+        return rules['Parser.hostExpr'].run(stream)
 class Matcher_Parser_353:
     def run(self, stream):
         return stream.bind('x', Matcher_Parser_352().run(stream))
 class Matcher_Parser_354:
     def run(self, stream):
-        return rules['Parser.space'].run(stream)
+        return stream.action(lambda self: self.lookup('listify')(
+            self.lookup('x')
+        ))
 class Matcher_Parser_355:
     def run(self, stream):
-        return stream.match(lambda item: item == '(', "'('")
+        return stream.operator_and([
+            Matcher_Parser_353(),
+            Matcher_Parser_354()
+        ])
 class Matcher_Parser_356:
     def run(self, stream):
-        return stream.operator_and([
-            Matcher_Parser_355()
-        ])
+        return stream.with_scope(Matcher_Parser_355())
 class Matcher_Parser_357:
     def run(self, stream):
-        return rules['Parser.hostExpr'].run(stream)
+        return stream.operator_or([
+            Matcher_Parser_356()
+        ])
 class Matcher_Parser_358:
     def run(self, stream):
         return stream.operator_star(Matcher_Parser_357())
 class Matcher_Parser_359:
     def run(self, stream):
-        return stream.bind('ys', Matcher_Parser_358().run(stream))
+        return stream.bind('xs', Matcher_Parser_358().run(stream))
 class Matcher_Parser_360:
     def run(self, stream):
         return rules['Parser.space'].run(stream)
 class Matcher_Parser_361:
     def run(self, stream):
-        return stream.match(lambda item: item == ')', "')'")
+        return stream.match(lambda item: item == '}', "'}'")
 class Matcher_Parser_362:
     def run(self, stream):
         return stream.operator_and([
@@ -1930,17 +1932,20 @@ class Matcher_Parser_362:
         ])
 class Matcher_Parser_363:
     def run(self, stream):
-        return stream.action(lambda self: self.lookup('concat')([
-            self.lookup('splice')(0, 'Call'),
-            self.lookup('splice')(0, self.lookup('x')),
-            self.lookup('splice')(1, self.lookup('ys'))
-        ]))
+        return stream.action(lambda self: self.lookup('Node')(
+            'Placeholder',
+            self.lookup('r'),
+            self.lookup('concat')([
+                self.lookup('splice')(0, 'Format'),
+                self.lookup('splice')(1, self.lookup('xs'))
+            ])
+        ))
 class Matcher_Parser_364:
     def run(self, stream):
         return stream.operator_and([
-            Matcher_Parser_353(),
-            Matcher_Parser_354(),
-            Matcher_Parser_356(),
+            Matcher_Parser_348(),
+            Matcher_Parser_349(),
+            Matcher_Parser_351(),
             Matcher_Parser_359(),
             Matcher_Parser_360(),
             Matcher_Parser_362(),
@@ -1951,93 +1956,95 @@ class Matcher_Parser_365:
         return stream.with_scope(Matcher_Parser_364())
 class Matcher_Parser_366:
     def run(self, stream):
-        return rules['Parser.var'].run(stream)
+        return stream.operator_and([
+        
+        ])
 class Matcher_Parser_367:
     def run(self, stream):
-        return stream.operator_and([
-            Matcher_Parser_366()
-        ])
+        return stream.match_range(Matcher_Parser_366())
 class Matcher_Parser_368:
     def run(self, stream):
-        return stream.with_scope(Matcher_Parser_367())
+        return stream.bind('r', Matcher_Parser_367().run(stream))
 class Matcher_Parser_369:
     def run(self, stream):
-        return stream.operator_or([
-            Matcher_Parser_327(),
-            Matcher_Parser_339(),
-            Matcher_Parser_351(),
-            Matcher_Parser_365(),
-            Matcher_Parser_368()
-        ])
+        return rules['Parser.var'].run(stream)
 class Matcher_Parser_370:
     def run(self, stream):
-        return rules['Parser.space'].run(stream)
+        return stream.bind('x', Matcher_Parser_369().run(stream))
 class Matcher_Parser_371:
     def run(self, stream):
-        return stream.match(lambda item: item == '~', "'~'")
+        return rules['Parser.space'].run(stream)
 class Matcher_Parser_372:
     def run(self, stream):
-        return stream.operator_and([
-            Matcher_Parser_371()
-        ])
+        return stream.match(lambda item: item == '(', "'('")
 class Matcher_Parser_373:
     def run(self, stream):
-        return stream.operator_star(Matcher_Parser_372())
+        return stream.operator_and([
+            Matcher_Parser_372()
+        ])
 class Matcher_Parser_374:
     def run(self, stream):
-        return stream.bind('ys', Matcher_Parser_373().run(stream))
+        return rules['Parser.hostExpr'].run(stream)
 class Matcher_Parser_375:
     def run(self, stream):
-        return rules['Parser.hostExpr'].run(stream)
+        return stream.bind('x', Matcher_Parser_374().run(stream))
 class Matcher_Parser_376:
     def run(self, stream):
-        return stream.bind('x', Matcher_Parser_375().run(stream))
+        return stream.action(lambda self: self.lookup('listify')(
+            self.lookup('x')
+        ))
 class Matcher_Parser_377:
     def run(self, stream):
-        return stream.action(lambda self: self.lookup('concat')([
-            self.lookup('splice')(0, 'ListItem'),
-            self.lookup('splice')(0, self.lookup('len')(
-                self.lookup('ys')
-            )),
-            self.lookup('splice')(0, self.lookup('x'))
-        ]))
+        return stream.operator_and([
+            Matcher_Parser_375(),
+            Matcher_Parser_376()
+        ])
 class Matcher_Parser_378:
     def run(self, stream):
-        return stream.operator_and([
-            Matcher_Parser_370(),
-            Matcher_Parser_374(),
-            Matcher_Parser_376(),
-            Matcher_Parser_377()
-        ])
+        return stream.with_scope(Matcher_Parser_377())
 class Matcher_Parser_379:
     def run(self, stream):
-        return stream.with_scope(Matcher_Parser_378())
+        return stream.operator_or([
+            Matcher_Parser_378()
+        ])
 class Matcher_Parser_380:
     def run(self, stream):
-        return stream.operator_or([
-            Matcher_Parser_379()
-        ])
+        return stream.operator_star(Matcher_Parser_379())
 class Matcher_Parser_381:
     def run(self, stream):
-        return rules['Parser.name'].run(stream)
+        return stream.bind('ys', Matcher_Parser_380().run(stream))
 class Matcher_Parser_382:
     def run(self, stream):
-        return stream.bind('x', Matcher_Parser_381().run(stream))
+        return rules['Parser.space'].run(stream)
 class Matcher_Parser_383:
     def run(self, stream):
-        return rules['Parser.space'].run(stream)
+        return stream.match(lambda item: item == ')', "')'")
 class Matcher_Parser_384:
     def run(self, stream):
-        return stream.match(lambda item: item == '=', "'='")
+        return stream.operator_and([
+            Matcher_Parser_383()
+        ])
 class Matcher_Parser_385:
     def run(self, stream):
-        return stream.operator_and([
-            Matcher_Parser_384()
-        ])
+        return stream.action(lambda self: self.lookup('Node')(
+            'Placeholder',
+            self.lookup('r'),
+            self.lookup('concat')([
+                self.lookup('splice')(0, 'Call'),
+                self.lookup('splice')(0, self.lookup('x')),
+                self.lookup('splice')(1, self.lookup('ys'))
+            ])
+        ))
 class Matcher_Parser_386:
     def run(self, stream):
         return stream.operator_and([
-            Matcher_Parser_383(),
+            Matcher_Parser_368(),
+            Matcher_Parser_370(),
+            Matcher_Parser_371(),
+            Matcher_Parser_373(),
+            Matcher_Parser_381(),
+            Matcher_Parser_382(),
+            Matcher_Parser_384(),
             Matcher_Parser_385()
         ])
 class Matcher_Parser_387:
@@ -2045,107 +2052,109 @@ class Matcher_Parser_387:
         return stream.with_scope(Matcher_Parser_386())
 class Matcher_Parser_388:
     def run(self, stream):
-        return stream.operator_or([
-            Matcher_Parser_387()
+        return stream.operator_and([
+        
         ])
 class Matcher_Parser_389:
     def run(self, stream):
-        return stream.operator_not(Matcher_Parser_388())
+        return stream.match_range(Matcher_Parser_388())
 class Matcher_Parser_390:
     def run(self, stream):
-        return stream.action(lambda self: self.lookup('concat')([
-            self.lookup('splice')(0, 'Lookup'),
-            self.lookup('splice')(0, self.lookup('x'))
-        ]))
+        return stream.bind('r', Matcher_Parser_389().run(stream))
 class Matcher_Parser_391:
     def run(self, stream):
-        return stream.operator_and([
-            Matcher_Parser_382(),
-            Matcher_Parser_389(),
-            Matcher_Parser_390()
-        ])
+        return rules['Parser.var'].run(stream)
 class Matcher_Parser_392:
     def run(self, stream):
-        return stream.with_scope(Matcher_Parser_391())
+        return stream.bind('x', Matcher_Parser_391().run(stream))
 class Matcher_Parser_393:
     def run(self, stream):
-        return stream.operator_or([
-            Matcher_Parser_392()
-        ])
+        return stream.action(lambda self: self.lookup('Node')(
+            'Placeholder',
+            self.lookup('r'),
+            self.lookup('x')
+        ))
 class Matcher_Parser_394:
     def run(self, stream):
-        return stream.match(lambda item: item == '"', '\'"\'')
+        return stream.operator_and([
+            Matcher_Parser_390(),
+            Matcher_Parser_392(),
+            Matcher_Parser_393()
+        ])
 class Matcher_Parser_395:
     def run(self, stream):
-        return stream.operator_and([
-            Matcher_Parser_394()
-        ])
+        return stream.with_scope(Matcher_Parser_394())
 class Matcher_Parser_396:
     def run(self, stream):
-        return stream.match(lambda item: item == '"', '\'"\'')
+        return stream.operator_or([
+            Matcher_Parser_330(),
+            Matcher_Parser_345(),
+            Matcher_Parser_365(),
+            Matcher_Parser_387(),
+            Matcher_Parser_395()
+        ])
 class Matcher_Parser_397:
     def run(self, stream):
-        return stream.operator_and([
-            Matcher_Parser_396()
-        ])
+        return rules['Parser.space'].run(stream)
 class Matcher_Parser_398:
     def run(self, stream):
-        return stream.operator_not(Matcher_Parser_397())
+        return stream.match(lambda item: item == '~', "'~'")
 class Matcher_Parser_399:
     def run(self, stream):
-        return rules['Parser.innerChar'].run(stream)
+        return stream.operator_and([
+            Matcher_Parser_398()
+        ])
 class Matcher_Parser_400:
     def run(self, stream):
-        return stream.operator_and([
-            Matcher_Parser_398(),
-            Matcher_Parser_399()
-        ])
+        return stream.operator_star(Matcher_Parser_399())
 class Matcher_Parser_401:
     def run(self, stream):
-        return stream.with_scope(Matcher_Parser_400())
+        return stream.bind('ys', Matcher_Parser_400().run(stream))
 class Matcher_Parser_402:
     def run(self, stream):
-        return stream.operator_or([
-            Matcher_Parser_401()
-        ])
+        return rules['Parser.hostExpr'].run(stream)
 class Matcher_Parser_403:
     def run(self, stream):
-        return stream.operator_star(Matcher_Parser_402())
+        return stream.bind('x', Matcher_Parser_402().run(stream))
 class Matcher_Parser_404:
     def run(self, stream):
-        return stream.bind('xs', Matcher_Parser_403().run(stream))
+        return stream.action(lambda self: self.lookup('concat')([
+            self.lookup('splice')(0, 'ListItem'),
+            self.lookup('splice')(0, self.lookup('len')(
+                self.lookup('ys')
+            )),
+            self.lookup('splice')(0, self.lookup('listify')(
+                self.lookup('x')
+            ))
+        ]))
 class Matcher_Parser_405:
     def run(self, stream):
-        return stream.match(lambda item: item == '"', '\'"\'')
+        return stream.operator_and([
+            Matcher_Parser_397(),
+            Matcher_Parser_401(),
+            Matcher_Parser_403(),
+            Matcher_Parser_404()
+        ])
 class Matcher_Parser_406:
     def run(self, stream):
-        return stream.operator_and([
-            Matcher_Parser_405()
-        ])
+        return stream.with_scope(Matcher_Parser_405())
 class Matcher_Parser_407:
     def run(self, stream):
-        return stream.action(lambda self: self.lookup('join')([
-            self.lookup('xs')
-        ]))
+        return stream.operator_or([
+            Matcher_Parser_406()
+        ])
 class Matcher_Parser_408:
     def run(self, stream):
-        return stream.operator_and([
-            Matcher_Parser_395(),
-            Matcher_Parser_404(),
-            Matcher_Parser_406(),
-            Matcher_Parser_407()
-        ])
+        return rules['Parser.name'].run(stream)
 class Matcher_Parser_409:
     def run(self, stream):
-        return stream.with_scope(Matcher_Parser_408())
+        return stream.bind('x', Matcher_Parser_408().run(stream))
 class Matcher_Parser_410:
     def run(self, stream):
-        return stream.operator_or([
-            Matcher_Parser_409()
-        ])
+        return rules['Parser.space'].run(stream)
 class Matcher_Parser_411:
     def run(self, stream):
-        return stream.match(lambda item: item == "'", '"\'"')
+        return stream.match(lambda item: item == '=', "'='")
 class Matcher_Parser_412:
     def run(self, stream):
         return stream.operator_and([
@@ -2153,60 +2162,64 @@ class Matcher_Parser_412:
         ])
 class Matcher_Parser_413:
     def run(self, stream):
-        return stream.match(lambda item: item == "'", '"\'"')
+        return stream.operator_and([
+            Matcher_Parser_410(),
+            Matcher_Parser_412()
+        ])
 class Matcher_Parser_414:
     def run(self, stream):
-        return stream.operator_and([
-            Matcher_Parser_413()
-        ])
+        return stream.with_scope(Matcher_Parser_413())
 class Matcher_Parser_415:
     def run(self, stream):
-        return stream.operator_not(Matcher_Parser_414())
+        return stream.operator_or([
+            Matcher_Parser_414()
+        ])
 class Matcher_Parser_416:
     def run(self, stream):
-        return rules['Parser.innerChar'].run(stream)
+        return stream.operator_not(Matcher_Parser_415())
 class Matcher_Parser_417:
     def run(self, stream):
-        return stream.bind('x', Matcher_Parser_416().run(stream))
+        return stream.action(lambda self: self.lookup('concat')([
+            self.lookup('splice')(0, 'Lookup'),
+            self.lookup('splice')(0, self.lookup('x'))
+        ]))
 class Matcher_Parser_418:
     def run(self, stream):
-        return stream.match(lambda item: item == "'", '"\'"')
+        return stream.operator_and([
+            Matcher_Parser_409(),
+            Matcher_Parser_416(),
+            Matcher_Parser_417()
+        ])
 class Matcher_Parser_419:
     def run(self, stream):
-        return stream.operator_and([
-            Matcher_Parser_418()
-        ])
+        return stream.with_scope(Matcher_Parser_418())
 class Matcher_Parser_420:
     def run(self, stream):
-        return stream.action(lambda self: self.lookup('x'))
+        return stream.operator_or([
+            Matcher_Parser_419()
+        ])
 class Matcher_Parser_421:
     def run(self, stream):
-        return stream.operator_and([
-            Matcher_Parser_412(),
-            Matcher_Parser_415(),
-            Matcher_Parser_417(),
-            Matcher_Parser_419(),
-            Matcher_Parser_420()
-        ])
+        return stream.match(lambda item: item == '"', '\'"\'')
 class Matcher_Parser_422:
     def run(self, stream):
-        return stream.with_scope(Matcher_Parser_421())
+        return stream.operator_and([
+            Matcher_Parser_421()
+        ])
 class Matcher_Parser_423:
     def run(self, stream):
-        return stream.operator_or([
-            Matcher_Parser_422()
-        ])
+        return stream.match(lambda item: item == '"', '\'"\'')
 class Matcher_Parser_424:
     def run(self, stream):
-        return stream.match(lambda item: item == '\\', "'\\\\'")
+        return stream.operator_and([
+            Matcher_Parser_423()
+        ])
 class Matcher_Parser_425:
     def run(self, stream):
-        return stream.operator_and([
-            Matcher_Parser_424()
-        ])
+        return stream.operator_not(Matcher_Parser_424())
 class Matcher_Parser_426:
     def run(self, stream):
-        return rules['Parser.escape'].run(stream)
+        return rules['Parser.innerChar'].run(stream)
 class Matcher_Parser_427:
     def run(self, stream):
         return stream.operator_and([
@@ -2218,41 +2231,44 @@ class Matcher_Parser_428:
         return stream.with_scope(Matcher_Parser_427())
 class Matcher_Parser_429:
     def run(self, stream):
-        return stream.match(lambda item: True, 'any')
+        return stream.operator_or([
+            Matcher_Parser_428()
+        ])
 class Matcher_Parser_430:
     def run(self, stream):
-        return stream.operator_and([
-            Matcher_Parser_429()
-        ])
+        return stream.operator_star(Matcher_Parser_429())
 class Matcher_Parser_431:
     def run(self, stream):
-        return stream.with_scope(Matcher_Parser_430())
+        return stream.bind('xs', Matcher_Parser_430().run(stream))
 class Matcher_Parser_432:
     def run(self, stream):
-        return stream.operator_or([
-            Matcher_Parser_428(),
-            Matcher_Parser_431()
-        ])
+        return stream.match(lambda item: item == '"', '\'"\'')
 class Matcher_Parser_433:
     def run(self, stream):
-        return stream.match(lambda item: item == '\\', "'\\\\'")
+        return stream.operator_and([
+            Matcher_Parser_432()
+        ])
 class Matcher_Parser_434:
     def run(self, stream):
-        return stream.operator_and([
-            Matcher_Parser_433()
-        ])
+        return stream.action(lambda self: self.lookup('join')([
+            self.lookup('xs')
+        ]))
 class Matcher_Parser_435:
     def run(self, stream):
-        return stream.action(lambda self: '\\')
+        return stream.operator_and([
+            Matcher_Parser_422(),
+            Matcher_Parser_431(),
+            Matcher_Parser_433(),
+            Matcher_Parser_434()
+        ])
 class Matcher_Parser_436:
     def run(self, stream):
-        return stream.operator_and([
-            Matcher_Parser_434(),
-            Matcher_Parser_435()
-        ])
+        return stream.with_scope(Matcher_Parser_435())
 class Matcher_Parser_437:
     def run(self, stream):
-        return stream.with_scope(Matcher_Parser_436())
+        return stream.operator_or([
+            Matcher_Parser_436()
+        ])
 class Matcher_Parser_438:
     def run(self, stream):
         return stream.match(lambda item: item == "'", '"\'"')
@@ -2263,121 +2279,121 @@ class Matcher_Parser_439:
         ])
 class Matcher_Parser_440:
     def run(self, stream):
-        return stream.action(lambda self: "'")
+        return stream.match(lambda item: item == "'", '"\'"')
 class Matcher_Parser_441:
     def run(self, stream):
         return stream.operator_and([
-            Matcher_Parser_439(),
             Matcher_Parser_440()
         ])
 class Matcher_Parser_442:
     def run(self, stream):
-        return stream.with_scope(Matcher_Parser_441())
+        return stream.operator_not(Matcher_Parser_441())
 class Matcher_Parser_443:
     def run(self, stream):
-        return stream.match(lambda item: item == '"', '\'"\'')
+        return rules['Parser.innerChar'].run(stream)
 class Matcher_Parser_444:
     def run(self, stream):
-        return stream.operator_and([
-            Matcher_Parser_443()
-        ])
+        return stream.bind('x', Matcher_Parser_443().run(stream))
 class Matcher_Parser_445:
     def run(self, stream):
-        return stream.action(lambda self: '"')
+        return stream.match(lambda item: item == "'", '"\'"')
 class Matcher_Parser_446:
     def run(self, stream):
         return stream.operator_and([
-            Matcher_Parser_444(),
             Matcher_Parser_445()
         ])
 class Matcher_Parser_447:
     def run(self, stream):
-        return stream.with_scope(Matcher_Parser_446())
+        return stream.action(lambda self: self.lookup('x'))
 class Matcher_Parser_448:
     def run(self, stream):
-        return stream.match(lambda item: item == 'n', "'n'")
+        return stream.operator_and([
+            Matcher_Parser_439(),
+            Matcher_Parser_442(),
+            Matcher_Parser_444(),
+            Matcher_Parser_446(),
+            Matcher_Parser_447()
+        ])
 class Matcher_Parser_449:
     def run(self, stream):
-        return stream.operator_and([
-            Matcher_Parser_448()
-        ])
+        return stream.with_scope(Matcher_Parser_448())
 class Matcher_Parser_450:
     def run(self, stream):
-        return stream.action(lambda self: '\n')
+        return stream.operator_or([
+            Matcher_Parser_449()
+        ])
 class Matcher_Parser_451:
     def run(self, stream):
-        return stream.operator_and([
-            Matcher_Parser_449(),
-            Matcher_Parser_450()
-        ])
+        return stream.match(lambda item: item == '\\', "'\\\\'")
 class Matcher_Parser_452:
     def run(self, stream):
-        return stream.with_scope(Matcher_Parser_451())
+        return stream.operator_and([
+            Matcher_Parser_451()
+        ])
 class Matcher_Parser_453:
     def run(self, stream):
-        return stream.operator_or([
-            Matcher_Parser_437(),
-            Matcher_Parser_442(),
-            Matcher_Parser_447(),
-            Matcher_Parser_452()
-        ])
+        return rules['Parser.escape'].run(stream)
 class Matcher_Parser_454:
     def run(self, stream):
-        return rules['Parser.space'].run(stream)
+        return stream.operator_and([
+            Matcher_Parser_452(),
+            Matcher_Parser_453()
+        ])
 class Matcher_Parser_455:
     def run(self, stream):
-        return rules['Parser.nameStart'].run(stream)
+        return stream.with_scope(Matcher_Parser_454())
 class Matcher_Parser_456:
     def run(self, stream):
-        return stream.bind('x', Matcher_Parser_455().run(stream))
+        return stream.match(lambda item: True, 'any')
 class Matcher_Parser_457:
     def run(self, stream):
-        return rules['Parser.nameChar'].run(stream)
+        return stream.operator_and([
+            Matcher_Parser_456()
+        ])
 class Matcher_Parser_458:
     def run(self, stream):
-        return stream.operator_star(Matcher_Parser_457())
+        return stream.with_scope(Matcher_Parser_457())
 class Matcher_Parser_459:
     def run(self, stream):
-        return stream.bind('xs', Matcher_Parser_458().run(stream))
+        return stream.operator_or([
+            Matcher_Parser_455(),
+            Matcher_Parser_458()
+        ])
 class Matcher_Parser_460:
     def run(self, stream):
-        return stream.action(lambda self: self.lookup('join')([
-            self.lookup('x'),
-            self.lookup('xs')
-        ]))
+        return stream.match(lambda item: item == '\\', "'\\\\'")
 class Matcher_Parser_461:
     def run(self, stream):
         return stream.operator_and([
-            Matcher_Parser_454(),
-            Matcher_Parser_456(),
-            Matcher_Parser_459(),
             Matcher_Parser_460()
         ])
 class Matcher_Parser_462:
     def run(self, stream):
-        return stream.with_scope(Matcher_Parser_461())
+        return stream.action(lambda self: '\\')
 class Matcher_Parser_463:
     def run(self, stream):
-        return stream.operator_or([
+        return stream.operator_and([
+            Matcher_Parser_461(),
             Matcher_Parser_462()
         ])
 class Matcher_Parser_464:
     def run(self, stream):
-        return stream.match(lambda item: 'a' <= item <= 'z', "'a'-'z'")
+        return stream.with_scope(Matcher_Parser_463())
 class Matcher_Parser_465:
     def run(self, stream):
-        return stream.operator_and([
-            Matcher_Parser_464()
-        ])
+        return stream.match(lambda item: item == "'", '"\'"')
 class Matcher_Parser_466:
     def run(self, stream):
-        return stream.with_scope(Matcher_Parser_465())
+        return stream.operator_and([
+            Matcher_Parser_465()
+        ])
 class Matcher_Parser_467:
     def run(self, stream):
-        return stream.match(lambda item: 'A' <= item <= 'Z', "'A'-'Z'")
+        return stream.action(lambda self: "'")
 class Matcher_Parser_468:
     def run(self, stream):
         return stream.operator_and([
+            Matcher_Parser_466(),
             Matcher_Parser_467()
         ])
 class Matcher_Parser_469:
@@ -2385,38 +2401,39 @@ class Matcher_Parser_469:
         return stream.with_scope(Matcher_Parser_468())
 class Matcher_Parser_470:
     def run(self, stream):
-        return stream.operator_or([
-            Matcher_Parser_466(),
-            Matcher_Parser_469()
-        ])
+        return stream.match(lambda item: item == '"', '\'"\'')
 class Matcher_Parser_471:
     def run(self, stream):
-        return stream.match(lambda item: 'a' <= item <= 'z', "'a'-'z'")
+        return stream.operator_and([
+            Matcher_Parser_470()
+        ])
 class Matcher_Parser_472:
     def run(self, stream):
-        return stream.operator_and([
-            Matcher_Parser_471()
-        ])
+        return stream.action(lambda self: '"')
 class Matcher_Parser_473:
     def run(self, stream):
-        return stream.with_scope(Matcher_Parser_472())
+        return stream.operator_and([
+            Matcher_Parser_471(),
+            Matcher_Parser_472()
+        ])
 class Matcher_Parser_474:
     def run(self, stream):
-        return stream.match(lambda item: 'A' <= item <= 'Z', "'A'-'Z'")
+        return stream.with_scope(Matcher_Parser_473())
 class Matcher_Parser_475:
     def run(self, stream):
-        return stream.operator_and([
-            Matcher_Parser_474()
-        ])
+        return stream.match(lambda item: item == 'n', "'n'")
 class Matcher_Parser_476:
     def run(self, stream):
-        return stream.with_scope(Matcher_Parser_475())
+        return stream.operator_and([
+            Matcher_Parser_475()
+        ])
 class Matcher_Parser_477:
     def run(self, stream):
-        return stream.match(lambda item: '0' <= item <= '9', "'0'-'9'")
+        return stream.action(lambda self: '\n')
 class Matcher_Parser_478:
     def run(self, stream):
         return stream.operator_and([
+            Matcher_Parser_476(),
             Matcher_Parser_477()
         ])
 class Matcher_Parser_479:
@@ -2425,63 +2442,172 @@ class Matcher_Parser_479:
 class Matcher_Parser_480:
     def run(self, stream):
         return stream.operator_or([
-            Matcher_Parser_473(),
-            Matcher_Parser_476(),
+            Matcher_Parser_464(),
+            Matcher_Parser_469(),
+            Matcher_Parser_474(),
             Matcher_Parser_479()
         ])
 class Matcher_Parser_481:
     def run(self, stream):
-        return stream.match(lambda item: item == ' ', "' '")
+        return rules['Parser.space'].run(stream)
 class Matcher_Parser_482:
     def run(self, stream):
-        return stream.operator_and([
-            Matcher_Parser_481()
-        ])
+        return rules['Parser.nameStart'].run(stream)
 class Matcher_Parser_483:
     def run(self, stream):
-        return stream.operator_and([
-            Matcher_Parser_482()
-        ])
+        return stream.bind('x', Matcher_Parser_482().run(stream))
 class Matcher_Parser_484:
     def run(self, stream):
-        return stream.with_scope(Matcher_Parser_483())
+        return rules['Parser.nameChar'].run(stream)
 class Matcher_Parser_485:
     def run(self, stream):
-        return stream.match(lambda item: item == '\n', "'\\n'")
+        return stream.operator_star(Matcher_Parser_484())
 class Matcher_Parser_486:
     def run(self, stream):
-        return stream.operator_and([
-            Matcher_Parser_485()
-        ])
+        return stream.bind('xs', Matcher_Parser_485().run(stream))
 class Matcher_Parser_487:
     def run(self, stream):
-        return stream.operator_and([
-            Matcher_Parser_486()
-        ])
+        return stream.action(lambda self: self.lookup('join')([
+            self.lookup('x'),
+            self.lookup('xs')
+        ]))
 class Matcher_Parser_488:
     def run(self, stream):
-        return stream.with_scope(Matcher_Parser_487())
+        return stream.operator_and([
+            Matcher_Parser_481(),
+            Matcher_Parser_483(),
+            Matcher_Parser_486(),
+            Matcher_Parser_487()
+        ])
 class Matcher_Parser_489:
     def run(self, stream):
-        return stream.operator_or([
-            Matcher_Parser_484(),
-            Matcher_Parser_488()
-        ])
+        return stream.with_scope(Matcher_Parser_488())
 class Matcher_Parser_490:
     def run(self, stream):
-        return stream.operator_star(Matcher_Parser_489())
+        return stream.operator_or([
+            Matcher_Parser_489()
+        ])
 class Matcher_Parser_491:
     def run(self, stream):
-        return stream.operator_and([
-            Matcher_Parser_490()
-        ])
+        return stream.match(lambda item: 'a' <= item <= 'z', "'a'-'z'")
 class Matcher_Parser_492:
     def run(self, stream):
-        return stream.with_scope(Matcher_Parser_491())
+        return stream.operator_and([
+            Matcher_Parser_491()
+        ])
 class Matcher_Parser_493:
     def run(self, stream):
+        return stream.with_scope(Matcher_Parser_492())
+class Matcher_Parser_494:
+    def run(self, stream):
+        return stream.match(lambda item: 'A' <= item <= 'Z', "'A'-'Z'")
+class Matcher_Parser_495:
+    def run(self, stream):
+        return stream.operator_and([
+            Matcher_Parser_494()
+        ])
+class Matcher_Parser_496:
+    def run(self, stream):
+        return stream.with_scope(Matcher_Parser_495())
+class Matcher_Parser_497:
+    def run(self, stream):
         return stream.operator_or([
-            Matcher_Parser_492()
+            Matcher_Parser_493(),
+            Matcher_Parser_496()
+        ])
+class Matcher_Parser_498:
+    def run(self, stream):
+        return stream.match(lambda item: 'a' <= item <= 'z', "'a'-'z'")
+class Matcher_Parser_499:
+    def run(self, stream):
+        return stream.operator_and([
+            Matcher_Parser_498()
+        ])
+class Matcher_Parser_500:
+    def run(self, stream):
+        return stream.with_scope(Matcher_Parser_499())
+class Matcher_Parser_501:
+    def run(self, stream):
+        return stream.match(lambda item: 'A' <= item <= 'Z', "'A'-'Z'")
+class Matcher_Parser_502:
+    def run(self, stream):
+        return stream.operator_and([
+            Matcher_Parser_501()
+        ])
+class Matcher_Parser_503:
+    def run(self, stream):
+        return stream.with_scope(Matcher_Parser_502())
+class Matcher_Parser_504:
+    def run(self, stream):
+        return stream.match(lambda item: '0' <= item <= '9', "'0'-'9'")
+class Matcher_Parser_505:
+    def run(self, stream):
+        return stream.operator_and([
+            Matcher_Parser_504()
+        ])
+class Matcher_Parser_506:
+    def run(self, stream):
+        return stream.with_scope(Matcher_Parser_505())
+class Matcher_Parser_507:
+    def run(self, stream):
+        return stream.operator_or([
+            Matcher_Parser_500(),
+            Matcher_Parser_503(),
+            Matcher_Parser_506()
+        ])
+class Matcher_Parser_508:
+    def run(self, stream):
+        return stream.match(lambda item: item == ' ', "' '")
+class Matcher_Parser_509:
+    def run(self, stream):
+        return stream.operator_and([
+            Matcher_Parser_508()
+        ])
+class Matcher_Parser_510:
+    def run(self, stream):
+        return stream.operator_and([
+            Matcher_Parser_509()
+        ])
+class Matcher_Parser_511:
+    def run(self, stream):
+        return stream.with_scope(Matcher_Parser_510())
+class Matcher_Parser_512:
+    def run(self, stream):
+        return stream.match(lambda item: item == '\n', "'\\n'")
+class Matcher_Parser_513:
+    def run(self, stream):
+        return stream.operator_and([
+            Matcher_Parser_512()
+        ])
+class Matcher_Parser_514:
+    def run(self, stream):
+        return stream.operator_and([
+            Matcher_Parser_513()
+        ])
+class Matcher_Parser_515:
+    def run(self, stream):
+        return stream.with_scope(Matcher_Parser_514())
+class Matcher_Parser_516:
+    def run(self, stream):
+        return stream.operator_or([
+            Matcher_Parser_511(),
+            Matcher_Parser_515()
+        ])
+class Matcher_Parser_517:
+    def run(self, stream):
+        return stream.operator_star(Matcher_Parser_516())
+class Matcher_Parser_518:
+    def run(self, stream):
+        return stream.operator_and([
+            Matcher_Parser_517()
+        ])
+class Matcher_Parser_519:
+    def run(self, stream):
+        return stream.with_scope(Matcher_Parser_518())
+class Matcher_Parser_520:
+    def run(self, stream):
+        return stream.operator_or([
+            Matcher_Parser_519()
         ])
 rules['Parser.file'] = Matcher_Parser_16()
 rules['Parser.namespace'] = Matcher_Parser_34()
@@ -2494,17 +2620,17 @@ rules['Parser.expr2'] = Matcher_Parser_262()
 rules['Parser.matchChar'] = Matcher_Parser_271()
 rules['Parser.maybeAction'] = Matcher_Parser_283()
 rules['Parser.actionExpr'] = Matcher_Parser_321()
-rules['Parser.hostExpr'] = Matcher_Parser_369()
-rules['Parser.hostListItem'] = Matcher_Parser_380()
-rules['Parser.var'] = Matcher_Parser_393()
-rules['Parser.string'] = Matcher_Parser_410()
-rules['Parser.char'] = Matcher_Parser_423()
-rules['Parser.innerChar'] = Matcher_Parser_432()
-rules['Parser.escape'] = Matcher_Parser_453()
-rules['Parser.name'] = Matcher_Parser_463()
-rules['Parser.nameStart'] = Matcher_Parser_470()
-rules['Parser.nameChar'] = Matcher_Parser_480()
-rules['Parser.space'] = Matcher_Parser_493()
+rules['Parser.hostExpr'] = Matcher_Parser_396()
+rules['Parser.hostListItem'] = Matcher_Parser_407()
+rules['Parser.var'] = Matcher_Parser_420()
+rules['Parser.string'] = Matcher_Parser_437()
+rules['Parser.char'] = Matcher_Parser_450()
+rules['Parser.innerChar'] = Matcher_Parser_459()
+rules['Parser.escape'] = Matcher_Parser_480()
+rules['Parser.name'] = Matcher_Parser_490()
+rules['Parser.nameStart'] = Matcher_Parser_497()
+rules['Parser.nameChar'] = Matcher_Parser_507()
+rules['Parser.space'] = Matcher_Parser_520()
 class Matcher_CodeGenerator_0:
     def run(self, stream):
         return stream.match_call_rule('CodeGenerator')
