@@ -34,7 +34,7 @@ Parser {
     |                                              -> []
   actionExpr =
     | space < '->' space hostExpr:x
-      (space ':' space name | -> ""):y >:r actionExpr:z  -> Node("Set" r y [x z])
+      (space ':' space name | -> ""):y actionExpr:z >:r  -> Node("Set" r y [x z])
     | space < '->' space hostExpr:x >:r                  -> x
   hostExpr =
     | < string:x >:r                         -> Node("String" r x)

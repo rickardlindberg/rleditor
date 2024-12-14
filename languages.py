@@ -114,10 +114,11 @@ def rlmeta_pretty(tree):
         | .
     }
 
-    >>> print(rlmeta_pretty(rlmeta_parse('G { Rule = .:name prettyInner*:xs -> "\\n":newline -> { "  " name " =\\n" xs } }')), end="")
+    >>> text = 'G { Rule = .:name -> "n":newline -> { "  " name " = " xs } }'
+    >>> print(rlmeta_pretty(rlmeta_parse(text)), end="")
     G {
       Rule =
-        | .:name prettyInner*:xs -> "\\n":newline -> { "  " name " =\\n" xs }
+        | .:name -> "n":newline -> { "  " name " = " xs }
     }
     """
     return compile_chain(["PrettyPrinter.pretty"], tree.as_list())

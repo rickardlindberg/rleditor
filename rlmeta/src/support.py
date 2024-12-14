@@ -244,6 +244,11 @@ class Node:
             self.value,
         ] + [child.as_list() for child in self.children]
 
+    def pprint(self, indentation=0):
+        print(f"{'  '*indentation}{self.name} {self.range}")
+        for child in self.children:
+            child.pprint(indentation + 1)
+
 
 class Range:
 
