@@ -15,18 +15,18 @@ Parser {
     | space < '[' < expr*:xs >:r2 space ']' >:r1      -> Node("MatchList" r1 "" [Node("And" r2 "" xs)])
     | <>:r expr1
   expr1 =
-    | <>:r expr2:x space '*'                       -> Node("Placeholder" r ["Star" x])
-    | <>:r expr2:x space '?'                       -> Node("Placeholder" r ["Or" "" x ["And" ""]])
-    | <>:r space '!' expr2:x                       -> Node("Placeholder" r ["Not" x])
+    | <>:r expr2:x space '*'                       -> Node("Placeholder" r ["Star" listify(x)])
+    | <>:r expr2:x space '?'                       -> Node("Placeholder" r ["Or" "" listify(x) ["And" ""]])
+    | <>:r space '!' expr2:x                       -> Node("Placeholder" r ["Not" listify(x)])
     | < space '%' >:r                              -> Node("MatchCallRule" r "")
-    | <>:r expr2:x                                 -> Node("Placeholder" r x)
+    | <>:r expr2:x                                 -> x
   expr2 =
-    | name:x !(space '=')                     -> ["MatchRule" x]
-    | space char:x '-' char:y                 -> ["MatchObject" ["Range" x y]]
-    | space '\'' (!'\'' matchChar)*:xs '\''   -> ["And" "" ~xs]
-    | space '.'                               -> ["MatchObject" ["Any"]]
-    | space '(' choice:x space ')'            -> listify(x)
-    | space '<' (expr:x -> listify(x))*:xs space '>'            -> ["MatchRange" ["And" "" ~xs]]
+    | <>:r name:x !(space '=')                             -> Node("Placeholder" r ["MatchRule" x])
+    | <>:r space char:x '-' char:y                         -> Node("Placeholder" r ["MatchObject" ["Range" x y]])
+    | <>:r space '\'' (!'\'' matchChar)*:xs '\''           -> Node("Placeholder" r ["And" "" ~xs])
+    | <>:r space '.'                                       -> Node("Placeholder" r ["MatchObject" ["Any"]])
+    | <>:r space '(' choice:x space ')'                    -> Node("Placeholder" r listify(x))
+    | <>:r space '<' (expr:x -> listify(x))*:xs space '>'  -> Node("Placeholder" r ["MatchRange" ["And" "" ~xs]])
   matchChar =
     | innerChar:x                             -> ["MatchObject" ["Eq" x]]
   maybeAction =
