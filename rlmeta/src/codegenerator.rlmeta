@@ -27,7 +27,7 @@ CodeGenerator {
   List          = . astList:x              -> { "self.lookup('concat')([" x "])"           }
   ListItem      = repr:x ast:y           -> { "self.lookup('splice')(" x ", " y ")"      }
   Format        = . astList:x              -> { "self.lookup('join')([" x "])"             }
-  Call          = ast:x astList:y        -> { x "(" y ")"                                }
+  Call          = . ast:x astList:y        -> { x "(" y ")"                                }
   Lookup        = repr:x                 -> { "self.lookup(" x ")"                       }
   Paren         = . ast
   Placeholder   = ast
