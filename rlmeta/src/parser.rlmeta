@@ -21,7 +21,7 @@ Parser {
     | < space '%' >:r                              -> Node("MatchCallRule" r "")
     | <>:r expr2:x                                 -> x
   expr2 =
-    | <>:r name:x !(space '=')                             -> Node("Placeholder" r ["MatchRule" x])
+    | <>:r name:x !(space '=')                             -> Node("MatchRule" r x)
     | <>:r space char:x '-' char:y                         -> Node("Placeholder" r ["MatchObject" ["Range" x y]])
     | <>:r space '\'' (!'\'' matchChar)*:xs '\''           -> Node("Placeholder" r ["And" "" ~xs])
     | <>:r space '.'                                       -> Node("Placeholder" r ["MatchObject" ["Any"]])
