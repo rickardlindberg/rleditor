@@ -28,7 +28,9 @@ PrettyPrinter {
     MatchRule = .
     MatchCallRule = . -> "%"
     MatchList = . prettyInner*:xs -> { "[" join(xs " ") "]" }
-    Set = .:name prettyInner:value prettyInner:rest -> { value ":" name " -> " rest }
+    Set =
+        | [!.]   prettyInner:value prettyInner:rest -> { value          " -> " rest }
+        | .:name prettyInner:value prettyInner:rest -> { value ":" name " -> " rest }
     Any = . -> "."
     doubleStringItem =
         | '"' -> "\\\""
