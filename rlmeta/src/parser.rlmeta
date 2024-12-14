@@ -25,7 +25,7 @@ Parser {
     | <>:r space char:x '-' char:y                         -> Node("Placeholder" r ["MatchObject" ["Range" x y]])
     | <>:r space '\'' (!'\'' matchChar)*:xs '\''           -> Node("Placeholder" r ["And" "" ~xs])
     | <>:r space '.'                                       -> Node("Placeholder" r ["MatchObject" ["Any"]])
-    | <>:r space '(' choice:x space ')'                    -> Node("Placeholder" r listify(x))
+    | <>:r space '(' choice:x space ')'                    -> Node("Paren" r "" [x])
     | <>:r space '<' (expr:x -> listify(x))*:xs space '>'  -> Node("Placeholder" r ["MatchRange" ["And" "" ~xs]])
   matchChar =
     | innerChar:x                             -> ["MatchObject" ["Eq" x]]

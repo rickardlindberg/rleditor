@@ -29,6 +29,7 @@ CodeGenerator {
   Format        = astList:x              -> { "self.lookup('join')([" x "])"             }
   Call          = ast:x astList:y        -> { x "(" y ")"                                }
   Lookup        = repr:x                 -> { "self.lookup(" x ")"                       }
+  Paren         = . ast
   Placeholder   = ast
   astList       = ast*:xs                -> { "\n" indent(join(xs ",\n")) "\n"           }
   matcher       =                        -> { "Matcher_" namespace "_" len(ids)          }:id ->
