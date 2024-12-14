@@ -163,7 +163,13 @@ class Editor:
             self.selection = node.range
 
     def selection_contract(self):
-        self.selection = self.get_selected_node().get_first_child().range
+        node = self.get_selected_node()
+        xxx = node.range
+        while node.get_first_child() is not node:
+            node = node.get_first_child()
+            if not node.range.is_same(xxx):
+                break
+        self.selection = node.range
 
     def select_next_node(self):
         self.selection = self.get_selected_node().get_next_sibling().range
