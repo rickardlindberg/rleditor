@@ -7,8 +7,8 @@ CodeGenerator {
                                             []:matchers                                         ->
                                             { matchers ys }
   Rule          = .:x ast:y              -> { "rules['" namespace "." x "'] = " y "\n"   }
-  Or            = [matcher:m astList:x]    -> { "stream.operator_or([" x "])"              }:body -> m
-  Scope         = matcher:m ast:x        -> { "stream.with_scope(" x ")"                 }:body -> m
+  Or            = . matcher:m astList:x    -> { "stream.operator_or([" x "])"              }:body -> m
+  Scope         = [matcher:m ast:x]        -> { "stream.with_scope(" x ")"                 }:body -> m
   And           = matcher:m astList:x    -> { "stream.operator_and([" x "])"             }:body -> m
   Bind          = matcher:m repr:x ast:y -> { "stream.bind(" x ", " y ".run(stream))"    }:body -> m
   Star          = matcher:m ast:x        -> { "stream.operator_star(" x ")"              }:body -> m

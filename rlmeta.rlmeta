@@ -3,6 +3,7 @@ PrettyPrinter {
     prettyInner = [pretty:x] -> x
     File = . prettyInner*:xs -> { xs }
     Namespace = .:name prettyInner*:xs -> { name " {\n" xs "}\n" }
-    Rule = .:name prettyInner*:xs -> { "  " name " = " xs }
-    Or = .* -> "OR\n"
+    Rule = .:name prettyInner*:xs -> { "  " name " =\n" xs }
+    Or = . (prettyInner:x -> {"    | " x "\n"})*:xs -> xs
+    Scope = . -> "SCOPE"
 }

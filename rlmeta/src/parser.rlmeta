@@ -7,16 +7,16 @@ Parser {
     | < name:x space '=' choice:y >:r               -> Node("Rule" r x [y])
   choice =
     | < (space '|')?
-      sequence:x (space '|' sequence)*:xs >:r    -> Node("Or" r [x ~xs])
+      sequence:x (space '|' sequence)*:xs >:r    -> Node("Or" r "" [x ~xs])
   sequence =
-    | expr*:xs maybeAction:ys                 -> ["Scope" ["And" ~xs ~ys]]
+    | < expr*:xs maybeAction:ys >:r                 -> Node("Scope" r [["And" ~xs ~ys]])
   expr =
     | expr1:x space ':' name:y                -> ["Bind" y x]
     | space '[' expr*:xs space ']'            -> ["MatchList" ["And" ~xs]]
     | expr1
   expr1 =
     | expr2:x space '*'                       -> ["Star" x]
-    | expr2:x space '?'                       -> ["Or" [x ["And"]]]
+    | expr2:x space '?'                       -> ["Or" "" x ["And"]]
     | space '!' expr2:x                       -> ["Not" x]
     | space '%'                               -> ["MatchCallRule"]
     | expr2
