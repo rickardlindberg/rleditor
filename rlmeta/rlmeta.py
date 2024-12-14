@@ -941,18 +941,16 @@ class Matcher_Parser_143:
 class Matcher_Parser_144:
     def run(self, stream):
         return stream.action(lambda self: self.lookup('Node')(
-            'Placeholder',
+            'Or',
             self.lookup('r'),
+            '',
             self.lookup('concat')([
-                self.lookup('splice')(0, 'Or'),
-                self.lookup('splice')(0, ''),
-                self.lookup('splice')(0, self.lookup('listify')(
-                    self.lookup('x')
-                )),
-                self.lookup('splice')(0, self.lookup('concat')([
-                    self.lookup('splice')(0, 'And'),
-                    self.lookup('splice')(0, '')
-                ]))
+                self.lookup('splice')(0, self.lookup('x')),
+                self.lookup('splice')(0, self.lookup('Node')(
+                    'And',
+                    self.lookup('r'),
+                    ''
+                ))
             ])
         ))
 class Matcher_Parser_145:
