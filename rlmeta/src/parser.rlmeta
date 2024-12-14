@@ -1,57 +1,57 @@
 Parser {
   file =
-    | < (space namespace)*:xs space >:r !.          -> Node("File" r "" xs)
+    | space < namespace*:xs space >:r !.           -> Node("File" r "" xs)
   namespace =
-    | < name:x space '{' rule*:ys space '}' >:r     -> Node("Namespace" r x ys)
+    | space < name:x space '{' rule*:ys space '}' >:r    -> Node("Namespace" r x ys)
   rule =
-    | < name:x space '=' choice:y >:r               -> Node("Rule" r x [y])
+    | space < name:x space '=' choice:y >:r              -> Node("Rule" r x [y])
   choice =
     | < (space '|')?
-      sequence:x (space '|' sequence)*:xs >:r    -> Node("Or" r "" [x ~xs])
+      sequence:x (space '|' sequence)*:xs >:r      -> Node("Or" r "" [x ~xs])
   sequence =
-    | < expr*:xs maybeAction:ys >:r                 -> Node("Scope" r "" [Node("And" r "" [~xs ~ys])])
+    | space < (space expr)*:xs maybeAction:ys >:r                -> Node("Scope" r "" [Node("And" r "" [~xs ~ys])])
   expr =
-    | < expr1:x space ':' name:y >:r          -> Node("Bind" r y [x])
-    | space < '[' < expr*:xs >:r2 space ']' >:r1      -> Node("MatchList" r1 "" [Node("And" r2 "" xs)])
-    | <>:r expr1
+    | < expr1:x space ':' space name:y >:r               -> Node("Bind" r y [x])
+    | < '[' < (space expr)*:xs >:r2 space ']' >:r1   -> Node("MatchList" r1 "" [Node("And" r2 "" xs)])
+    | expr1
   expr1 =
-    | <>:r expr2:x space '*'                       -> Node("Star" r "" [x])
-    | <>:r expr2:x space '?'                       -> Node("Or" r "" [x Node("And" r "")])
-    | <>:r space '!' expr2:x                       -> Node("Not" r "" [x])
-    | < space '%' >:r                              -> Node("MatchCallRule" r "")
-    | <>:r expr2:x                                 -> x
+    | < expr2:x space '*' >:r                      -> Node("Star" r "" [x])
+    | < expr2:x space '?' >:r                      -> Node("Or" r "" [x Node("And" r "")])
+    | < '!' space expr2:x >:r                      -> Node("Not" r "" [x])
+    | < '%' >:r                              -> Node("MatchCallRule" r "")
+    | expr2:x                                      -> x
   expr2 =
-    | <>:r name:x !(space '=')                     -> Node("MatchRule" r x)
-    | <>:r space char:x '-' char:y                 -> Node("MatchObject" r "" [Node("Range" r [x y])])
-    | <>:r space '\'' (!'\'' matchChar)*:xs '\''   -> Node("And" r "" xs)
-    | <>:r space '.'                               -> Node("MatchObject" r "" [Node("Any" r "")])
-    | <>:r space '(' choice:x space ')'            -> Node("Paren" r "" [x])
-    | <>:r space '<' expr*:xs space '>'            -> Node("MatchRange" r "" [Node("And" r "" xs)])
+    | < name:x >:r !(space '=')                    -> Node("MatchRule" r x)
+    | < char:x '-' char:y >:r                -> Node("MatchObject" r "" [Node("Range" r [x y])])
+    | < '\'' (!'\'' matchChar)*:xs '\'' >:r  -> Node("And" r "" xs)
+    | < '.' >:r                              -> Node("MatchObject" r "" [Node("Any" r "")])
+    | < '(' choice:x space ')' >:r           -> Node("Paren" r "" [x])
+    | < '<' (space expr)*:xs space '>' >:r           -> Node("MatchRange" r "" [Node("And" r "" xs)])
   matchChar =
-    | <>:r innerChar:x                             -> Node("MatchObject" r "" [Node("Eq" r x)])
+    | < innerChar:x >:r                            -> Node("MatchObject" r "" [Node("Eq" r x)])
   maybeAction =
-    | < actionExpr:x >:r                      -> [Node("Action" r "" [x])]
-    |                                         -> []
+    | < actionExpr:x >:r                           -> [Node("Action" r "" [x])]
+    |                                              -> []
   actionExpr =
-    | <>:r space '->' hostExpr:x
-      (space ':' name | -> ""):y actionExpr:z -> Node("Set" r y [x z])
-    | <>:r space '->' hostExpr:x              -> x
+    | space < '->' space hostExpr:x
+      (space ':' space name | -> ""):y >:r actionExpr:z  -> Node("Set" r y [x z])
+    | space < '->' space hostExpr:x >:r                  -> x
   hostExpr =
-    | <>:r space string:x                          -> Node("String" r x)
-    | <>:r space '[' hostListItem*:xs space ']'    -> Node("List" r "" xs)
-    | <>:r space '{' hostExpr*:xs space '}'        -> Node("Format" r "" xs)
-    | <>:r var:x space '(' hostExpr*:ys space ')'  -> Node("Call" r "" [x ~ys])
+    | < string:x >:r                         -> Node("String" r x)
+    | < '[' hostListItem*:xs space ']' >:r   -> Node("List" r "" xs)
+    | < '{' (space hostExpr)*:xs space '}' >:r       -> Node("Format" r "" xs)
+    | < var:x space '(' (space hostExpr)*:ys space ')' >:r -> Node("Call" r "" [x ~ys])
     | var
   hostListItem =
-    | <>:r space '~'*:ys hostExpr:x                -> Node("ListItem" r len(ys) [x])
+    | space < '~'*:ys space hostExpr:x >:r               -> Node("ListItem" r len(ys) [x])
   var =
-    | < name:x >:r !(space '=')                     -> Node("Lookup" r x)
+    | < name:x >:r !(space '=')                    -> Node("Lookup" r x)
   string    = '"'  (!'"'  innerChar)*:xs '"'  -> { xs }
   char      = '\''  !'\'' innerChar  :x  '\'' -> x
   innerChar = '\\' escape | .
   escape    = '\\' -> "\\" | '\'' -> "'"
             | '"'  -> "\"" | 'n'  -> "\n"
-  name      = space nameStart:x nameChar*:xs  -> { x xs }
+  name      = nameStart:x nameChar*:xs  -> { x xs }
   nameStart = 'a'-'z' | 'A'-'Z'
   nameChar  = 'a'-'z' | 'A'-'Z' | '0'-'9'
   space     = (' ' | '\n')*
