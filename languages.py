@@ -110,15 +110,13 @@ def rlmeta_pretty(tree):
     """
     >>> print(rlmeta_pretty(rlmeta_parse("Grammar { foo = . }")), end="")
     Grammar {
-      foo =
-        | .
+      foo = .
     }
 
     >>> text = 'G { Rule = .:name -> "n":newline -> { "  " name " = " xs } }'
     >>> print(rlmeta_pretty(rlmeta_parse(text)), end="")
     G {
-      Rule =
-        | .:name -> "n":newline -> { "  " name " = " xs }
+      Rule = .:name -> "n":newline -> { "  " name " = " xs }
     }
     """
     return compile_chain(["PrettyPrinter.pretty"], tree.as_list())
