@@ -79,13 +79,13 @@ class Stream:
         return self.action(lambda self: Range(start, end))
 
     def match_call_rule(self, namespace):
-        if self.index >= len(self.items):
-            self.error(f"Expected rule name, but found end of list: {self.items!r}")
-        if not isinstance(self.items[self.index], str):
-            self.error(
-                f"Match call rule was not a string at {self.index}: {self.items!r}"
-            )
-        name = namespace + "." + self.items[self.index]
+        try:
+            rule_name = self.items[self.index]
+        except:
+            self.error(f"Could not extract rule name.")
+        if not isinstance(rule_name, str):
+            self.error(f"Match call rule was not a string.")
+        name = namespace + "." + rule_name
         if name in rules:
             rule = rules[name]
             self.index += 1
