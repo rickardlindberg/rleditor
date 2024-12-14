@@ -79,6 +79,10 @@ class Stream:
         return self.action(lambda self: Range(start, end))
 
     def match_call_rule(self, namespace):
+        if not isinstance(self.items[self.index], str):
+            self.error(
+                f"Match call rule was not a string at {self.index}: {self.items!r}"
+            )
         name = namespace + "." + self.items[self.index]
         if name in rules:
             rule = rules[name]
