@@ -5,5 +5,8 @@ PrettyPrinter {
     Namespace = .:name prettyInner*:xs -> { name " {\n" xs "}\n" }
     Rule = .:name prettyInner*:xs -> { "  " name " =\n" xs }
     Or = . (prettyInner:x -> {"    | " x "\n"})*:xs -> xs
-    Scope = . . -> "SCOPE"
+    Scope = . prettyInner
+    And = . prettyInner*:xs -> { join(xs " ") }
+    MatchObject = . prettyInner
+    Any = . -> "."
 }

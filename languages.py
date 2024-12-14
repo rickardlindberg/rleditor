@@ -111,7 +111,7 @@ def rlmeta_pretty(tree):
     >>> print(rlmeta_pretty(rlmeta_parse("Grammar { foo = . }")), end="")
     Grammar {
       foo =
-        | SCOPE
+        | .
     }
     """
     return compile_chain(["PrettyPrinter.pretty"], tree.as_list())
