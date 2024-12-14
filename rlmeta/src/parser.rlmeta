@@ -30,12 +30,12 @@ Parser {
   matchChar =
     | innerChar:x                             -> ["MatchObject" ["Eq" x]]
   maybeAction =
-    | <>:r actionExpr:x                       -> [Node("Placeholder" r ["Action" x])]
+    | < actionExpr:x >:r                      -> [Node("Action" r "" [x])]
     |                                         -> []
   actionExpr =
-    | space '->' hostExpr:x
-      (space ':' name | -> ""):y actionExpr:z -> ["Set" y x z]
-    | space '->' hostExpr
+    | <>:r space '->' hostExpr:x
+      (space ':' name | -> ""):y actionExpr:z -> Node("Placeholder" r ["Set" y x listify(z)])
+    | <>:r space '->' hostExpr:x              -> Node("Placeholder" r x)
   hostExpr =
     | space string:x                          -> ["String" x]
     | space '[' hostListItem*:xs space ']'    -> ["List" ~xs]
