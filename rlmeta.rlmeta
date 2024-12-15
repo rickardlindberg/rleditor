@@ -2,17 +2,17 @@ PrettyPrinter {
     pretty = %:x !. -> x
     prettyInner = [pretty:x] -> x
     File = . prettyInner*:xs -> { xs }
-    Namespace = .:name prettyInner*:xs -> { name " {\n" xs "}\n" }
-    Rule = .:name prettyInner*:xs -> "\n":newline -> { "  " name " =" xs }
+    Namespace = .:name prettyInner*:xs -> { name " {\n" table(xs) "}\n" }
+    Rule = .:name prettyInner:x -> ["  " name " = " x]
     Or =
         | . prettyInner:x [['And'] .] -> { x "?" }
-        | . prettyInner:x !. -> { " " x newline}
-        | . (prettyInner:x -> {"    | " x newline})*:xs -> { "\n" xs }
+        | . prettyInner:x !. -> { x }
+        | . (prettyInner:x -> ["" "" " | " {x}])*
     Scope = . prettyInner
     And = . prettyInner*:xs -> { join(xs " ") }
     Bind = .:name prettyInner:x -> { x ":" name }
     Star = . prettyInner:x -> { x "*" }
-    Paren = . prettyInner:x -> "":newline -> { "(" x ")" }
+    Paren = . prettyInner:x -> { "(" x ")" }
     Not = . prettyInner:x -> { "!" x }
     Action = . prettyInner:x -> { "-> " x }
     Call = . prettyInner:x prettyInner*:ys -> { x "(" join(ys " ") ")" }

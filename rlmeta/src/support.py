@@ -182,6 +182,42 @@ class Runtime:
     def Node(self, name, range_, value, children=[]):
         return Node(name, range_.start, range_.end, value, children)
 
+    def table(self, rows):
+        expanded = self.expand_rows(rows)
+        max_lengths = {}
+        for row in expanded:
+            for index, column in enumerate(row):
+                if index not in max_lengths:
+                    max_lengths[index] = len(column)
+                else:
+                    max_lengths[index] = max(len(column), max_lengths[index])
+        return "".join(
+            [
+                "".join(
+                    [
+                        column.ljust(max_lengths[index])
+                        for index, column in enumerate(row)
+                    ]
+                ).rstrip()
+                + "\n"
+                for row in expanded
+            ]
+        )
+
+    def expand_rows(self, rows):
+        total = []
+        for row in rows:
+            expanded = []
+            extra = []
+            for column in row:
+                if isinstance(column, list):
+                    extra.extend(self.expand_rows(column))
+                else:
+                    expanded.append(column)
+            total.append(expanded)
+            total.extend(extra)
+        return total
+
 
 class Node:
 
