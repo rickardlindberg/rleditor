@@ -29,8 +29,6 @@
 
 * Code is beautiful. A code editor should show that beauty.
 
-* Range matching in RLMeta: `{ .*:xs }:range -> Node(range xs)`.
-
 * F-string syntax in RLMeta instead of `{}`.
 
 * Ncurses UI.
